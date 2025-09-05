@@ -1,0 +1,13 @@
+{
+    "cobol-lsp.server.extraArgs": ["-std=cobol85"],
+    "cobol-lsp.copybookdirs": ["./copybooks"],
+    "files.associations": {
+        "*.cbl": "cobol",
+        "*.cob": "cobol"
+    },
+    "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": false,
+    "code-runner.executorMap": {
+        "cobol": "cobc -x $fileName && ./$fileNameWithoutExt"
+    }
+}
