@@ -1,0 +1,35 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. BANK-ACCOUNT.
+       AUTHOR. YOUR-NAME.
+       DATE-WRITTEN. 2023-11-01.
+       
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  ACCOUNT-BALANCE      PIC 9(5)V99   VALUE 1000.00.
+       01  DEPOSIT-AMOUNT       PIC 9(5)V99   VALUE 0.
+       01  WITHDRAWAL-AMOUNT    PIC 9(5)V99   VALUE 0.
+       01 ESCAPE-CODE PIC X(3) VALUE X"1B5B".
+       01 CURSOR-POSITION PIC X(20).
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+           STRING
+               ESCAPE-CODE DELIMITED BY SIZE,
+               "5;10H" DELIMITED BY SIZE INTO CURSOR-POSITION
+           END-STRING.
+           
+           DISPLAY CURSOR-POSITION "Current balance: $" ACCOUNT-BALANCE  
+           
+           MOVE 250.50 TO DEPOSIT-AMOUNT.
+           ADD DEPOSIT-AMOUNT TO ACCOUNT-BALANCE.
+           DISPLAY "Deposited: $" DEPOSIT-AMOUNT.
+           DISPLAY "New balance: $" ACCOUNT-BALANCE.
+           
+           MOVE 100.75 TO WITHDRAWAL-AMOUNT.
+           SUBTRACT WITHDRAWAL-AMOUNT FROM ACCOUNT-BALANCE.
+           DISPLAY "Withdrew: $" WITHDRAWAL-AMOUNT.
+           DISPLAY "Final balance: $" ACCOUNT-BALANCE.
+           
+           COPY "screen.cpy".
+
+           STOP RUN.
+           
