@@ -7,5 +7,6 @@
        WORKING-STORAGE SECTION.
        PROCEDURE DIVISION.
        MAIN-PROCEDURE.
+           DISPLAY "ESTE ES EL PROGRAMA DE ALTAS"
            STOP RUN.
            
