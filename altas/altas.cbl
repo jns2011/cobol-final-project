@@ -1,44 +1,12 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. ALTAS.
-       AUTHOR. NOELIA,GISEL, LUCAS, ESTEFANIA.
-       DATE-WRITTEN. 2025-09-05.
-       ENVIRONMENT DIVISION.
+       PROGRAM-ID. ALTA-CLIENTES.
+       AUTHOR. YOUR-NAME.
+       DATE-WRITTEN. 2025-08-05.
+       
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-
-       01 MENU-CHOICE-STR PIC X(2).
-       01 MENU-CHOICE     PIC 9.
-          88 CREATE-CBF   VALUE 1.
-          88 EXIT-PROGRAM VALUE 2.
-
-       01 ID-CUENTA.
-             05 ID-D1   PIC 9.
-             05 ID-D2   PIC 9.
-             05 ID-D3   PIC 9.
-             05 ID-D4   PIC 9.
-             05 ID-D5   PIC 9.
-       01 CLAVE-BANCARIA PIC X(6).
-
        PROCEDURE DIVISION.
-       MAIN-PROGRAM.
-               PERFORM DISPLAY-MENU UNTIL EXIT-PROGRAM.
-            STOP RUN.
-
-        DISPLAY-MENU.
-           DISPLAY "-------------------------------------------------".
-           DISPLAY "---PROGRAMA CALCULO DE CLAVE BANCARIA FICTICIA---".
-           DISPLAY "-------------------------------------------------".
-           DISPLAY "1. Crear claves bancarias desde CSV".
-           DISPLAY "2. Salir".
-           DISPLAY "SU OPCION: " WITH NO ADVANCING.
-           ACCEPT MENU-CHOICE-STR.
-           MOVE FUNCTION NUMVAL(MENU-CHOICE-STR) TO MENU-CHOICE.
-
-           EVALUATE TRUE
-              WHEN CREATE-CBF
-                  CALL "CREAR-CBF" USING ID-CUENTA, CLAVE-BANCARIA
-           WHEN EXIT-PROGRAM
-                  CONTINUE
-           WHEN OTHER
-                  DISPLAY "OPCION INVALIDA"
-           END-EVALUATE.
+       MAIN-PROCEDURE.
+           DISPLAY "ESTE ES EL PROGRAMA DE ALTAS"
+           STOP RUN.
+           
