@@ -1,13 +1,12 @@
 {
-    "cobol-lsp.server.extraArgs": ["-std=cobol85"],
-    "cobol-lsp.copybookdirs": ["./copybooks"],
-    "files.associations": {
-        "*.cbl": "cobol",
-        "*.cob": "cobol"
-    },
-    "files.insertFinalNewline": true,
-  "files.trimFinalNewlines": false,
     "code-runner.executorMap": {
-        "cobol": "cobc -x $fileName && ./$fileNameWithoutExt"
+        "cobol": "cobc -x -free $fullFileName && $dir$fileNameWithoutExt.exe"
+    },
+    "code-runner.runInTerminal": true,
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.terminalRoot": "",
+    "code-runner.executorMapByFileExtension": {
+        ".cbl": "cobc -x -free $fullFileName && $dir$fileNameWithoutExt.exe",
+        ".cob": "cobc -x -free $fullFileName && $dir$fileNameWithoutExt.exe"
     }
 }
