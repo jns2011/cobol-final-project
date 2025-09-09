@@ -19,11 +19,15 @@
  WORKING-STORAGE SECTION.
  01 EOF-FLAG PIC 9 VALUE 0.
  01 ID-CUENTA-STR PIC X(6).
- 01 FILE-STATUS PIC XX.
+ 
+#line 1 "includes\file-status.cbl"
  88 FILE-SUCCESS VALUE "00".
  88 FILE-NOT-FOUND VALUE "23".
  88 FILE-NOT-READY VALUE "35".
  88 FILE-DUPLICATE VALUE "22".
+
+#line 21 "crear-cbf.cbl"
+
 
  LINKAGE SECTION.
  01 ID-CUENTA.
@@ -39,7 +43,7 @@
  
 #line 1 "includes\open.cbl"
  OPEN INPUT CSV-FILE
-#line 38 "crear-cbf.cbl"
+#line 34 "crear-cbf.cbl"
 
 
  PERFORM UNTIL EOF-FLAG = 1
@@ -75,7 +79,7 @@
 #line 1 "includes\close.cbl"
  CLOSE CSV-FILE
 
-#line 69 "crear-cbf.cbl"
+#line 65 "crear-cbf.cbl"
 
 
  GOBACK.

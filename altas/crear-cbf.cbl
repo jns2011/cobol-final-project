@@ -18,11 +18,7 @@
        WORKING-STORAGE SECTION.
        01 EOF-FLAG      PIC 9 VALUE 0.
        01 ID-CUENTA-STR PIC X(6).
-         01  FILE-STATUS            PIC XX.
-           88  FILE-SUCCESS       VALUE "00".
-           88  FILE-NOT-FOUND     VALUE "23".
-           88  FILE-NOT-READY     VALUE "35".
-           88  FILE-DUPLICATE     VALUE "22".
+       COPY "includes/file-status.cbl".
 
        LINKAGE SECTION.
          01 ID-CUENTA.

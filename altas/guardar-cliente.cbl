@@ -20,11 +20,8 @@
              05 CLI-EMAIL  PIC X(50).
 
        WORKING-STORAGE SECTION.
-         01  FILE-STATUS            PIC XX.
-           88  FILE-SUCCESS       VALUE "00".
-           88  FILE-NOT-FOUND     VALUE "23".
-           88  FILE-NOT-READY     VALUE "35".
-           88  FILE-DUPLICATE     VALUE "22".
+        01 FILE-STATUS PIC XX.
+           COPY "includes/file-status.cbl".
 
        LINKAGE SECTION.
         01 CLAVE-BANCARIA PIC 9(6).
