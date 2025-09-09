@@ -18,7 +18,7 @@
        WORKING-STORAGE SECTION.
        01 EOF-FLAG      PIC 9 VALUE 0.
        01 ID-CUENTA-STR PIC X(6).
-       COPY "includes/file-status.cbl".
+       COPY "file-status.cbl".
 
        LINKAGE SECTION.
          01 ID-CUENTA.
@@ -31,7 +31,7 @@
 
        PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.
 
-           COPY "includes/open.cbl".
+           COPY "open.cbl".
 
            PERFORM UNTIL EOF-FLAG = 1
              READ CSV-FILE
@@ -62,6 +62,6 @@
              END-READ
            END-PERFORM.
 
-           COPY "includes/close.cbl".
+           COPY "close.cbl".
 
            GOBACK.

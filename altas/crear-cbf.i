@@ -1,4 +1,4 @@
-#line 1 "crear-cbf.cbl"
+#line 1 "C:\msys64\home\lopez\COBOL\cajero\altas\crear-cbf.cbl"
  IDENTIFICATION DIVISION.
  PROGRAM-ID. CREAR-CBF.
  ENVIRONMENT DIVISION.
@@ -20,13 +20,7 @@
  01 EOF-FLAG PIC 9 VALUE 0.
  01 ID-CUENTA-STR PIC X(6).
  
-#line 1 "includes\file-status.cbl"
- 88 FILE-SUCCESS VALUE "00".
- 88 FILE-NOT-FOUND VALUE "23".
- 88 FILE-NOT-READY VALUE "35".
- 88 FILE-DUPLICATE VALUE "22".
-
-#line 21 "crear-cbf.cbl"
+#line 21 "C:\msys64\home\lopez\COBOL\cajero\altas\crear-cbf.cbl"
 
 
  LINKAGE SECTION.
@@ -41,9 +35,7 @@
  PROCEDURE DIVISION USING ID-CUENTA CLAVE-BANCARIA.
 
  
-#line 1 "includes\open.cbl"
- OPEN INPUT CSV-FILE
-#line 34 "crear-cbf.cbl"
+#line 34 "C:\msys64\home\lopez\COBOL\cajero\altas\crear-cbf.cbl"
 
 
  PERFORM UNTIL EOF-FLAG = 1
@@ -76,10 +68,7 @@
  END-PERFORM.
 
  
-#line 1 "includes\close.cbl"
- CLOSE CSV-FILE
-
-#line 65 "crear-cbf.cbl"
+#line 65 "C:\msys64\home\lopez\COBOL\cajero\altas\crear-cbf.cbl"
 
 
  GOBACK.
