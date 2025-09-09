@@ -50,7 +50,6 @@
  STOP RUN
  END-IF
  END-IF.
-
 #line 39 "guardar-cliente.cbl"
 
 
@@ -73,7 +72,7 @@
  
 #line 1 "includes\close-file-client.cbl"
  CLOSE CUENTAS-FILE
- DISPLAY "Cerrando archivo" 
+
 #line 57 "guardar-cliente.cbl"
 
 

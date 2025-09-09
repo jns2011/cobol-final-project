@@ -1,26 +1,16 @@
 #line 1 "C:\msys64\home\lopez\COBOL\cajero\altas\altas.cbl"
-#area_a
  IDENTIFICATION DIVISION.
-#area_a
- PROGRAM-ID. ALTAS.
-#area_a
+ PROGRAM-ID. ALTAS-CLIENTES.
 
 
  ENVIRONMENT DIVISION.
-#area_a
  DATA DIVISION.
-#area_a
  WORKING-STORAGE SECTION.
-#area_a
 
  01 MENU-CHOICE-STR PIC X(2).
-#area_a
  01 MENU-CHOICE PIC 9.
-#area_a
  88 CREATE-CBF VALUE 1.
-#area_a
  88 EXIT-PROGRAM VALUE 2.
-#area_a
 
  01 ID-CUENTA.
  05 ID-D1 PIC 9.
@@ -28,16 +18,12 @@
  05 ID-D3 PIC 9.
  05 ID-D4 PIC 9.
  05 ID-D5 PIC 9.
-#area_a
  01 CLAVE-BANCARIA PIC X(6).
-#area_a
 
  PROCEDURE DIVISION.
-#area_a
- MAIN-PROGRAM.
+ MAIN-PROCEDURE.
  PERFORM DISPLAY-MENU UNTIL EXIT-PROGRAM.
  STOP RUN.
-#area_a
 
  DISPLAY-MENU.
  DISPLAY "-------------------------------------------------".
@@ -57,3 +43,4 @@
  WHEN OTHER
  DISPLAY "OPCION INVALIDA" 
  END-EVALUATE.
+

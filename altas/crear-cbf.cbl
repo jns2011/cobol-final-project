@@ -67,4 +67,5 @@
            END-PERFORM.
 
            COPY "includes/close.cbl".
+
            GOBACK.

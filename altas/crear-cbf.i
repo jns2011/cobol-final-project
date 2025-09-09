@@ -74,7 +74,8 @@
  
 #line 1 "includes\close.cbl"
  CLOSE CSV-FILE
- DISPLAY "Cerrando archivo" 
+
 #line 69 "crear-cbf.cbl"
+
 
  GOBACK.
