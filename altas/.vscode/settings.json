@@ -5,6 +5,12 @@
         "*.cbl": "cobol",
         "*.cob": "cobol"
     },
+     "files.exclude": {
+    "*.c": true,
+    "*.c.h": true,
+    "*.c.l.h": true,
+    "*.i": true,
+  }
     "files.insertFinalNewline": true,
   "files.trimFinalNewlines": false,
     "code-runner.executorMap": {

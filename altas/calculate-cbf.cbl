@@ -1,0 +1,48 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CALCULATE-CBF.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 SUMA-DIGITOS   PIC 9(4) VALUE 0.
+       01 TMP            PIC 9(4).
+       01 RESTO          PIC 9(2).
+       01 DV             PIC 9.
+
+
+       LINKAGE SECTION.
+       COPY "id-cuentas.cbl".
+       COPY "clave-bancaria.cbl".
+
+
+       PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.
+           MOVE 0 TO SUMA-DIGITOS
+
+           MULTIPLY 6 BY ID-D1 GIVING TMP
+           ADD TMP TO SUMA-DIGITOS
+
+           MULTIPLY 5 BY ID-D2 GIVING TMP
+           ADD TMP TO SUMA-DIGITOS
+
+           MULTIPLY 4 BY ID-D3 GIVING TMP
+           ADD TMP TO SUMA-DIGITOS
+
+           MULTIPLY 3 BY ID-D4 GIVING TMP
+           ADD TMP TO SUMA-DIGITOS
+
+           MULTIPLY 2 BY ID-D5 GIVING TMP
+           ADD TMP TO SUMA-DIGITOS
+
+           DIVIDE SUMA-DIGITOS BY 11 GIVING TMP REMAINDER RESTO
+
+           COMPUTE DV = 11 - RESTO
+           IF DV = 10 OR DV = 11
+              MOVE 0 TO DV
+              END-IF
+
+           MOVE ID-D1 TO CLAVE-BANCARIA(1:1)
+           MOVE ID-D2 TO CLAVE-BANCARIA(2:1)
+           MOVE ID-D3 TO CLAVE-BANCARIA(3:1)
+           MOVE ID-D4 TO CLAVE-BANCARIA(4:1)
+           MOVE ID-D5 TO CLAVE-BANCARIA(5:1)
+           MOVE DV    TO CLAVE-BANCARIA(6:1)
+
+           GOBACK.
