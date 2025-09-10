@@ -11,13 +11,8 @@
           88 CREATE-CBF   VALUE 1.
           88 EXIT-PROGRAM VALUE 2.
 
-       01 ID-CUENTA.
-             05 ID-D1   PIC 9.
-             05 ID-D2   PIC 9.
-             05 ID-D3   PIC 9.
-             05 ID-D4   PIC 9.
-             05 ID-D5   PIC 9.
-       01 CLAVE-BANCARIA PIC X(6).
+       COPY "id-cuentas.cbl".
+       COPY "clave-bancaria.cbl".
 
        PROCEDURE DIVISION.
        MAIN-PROCEDURE.

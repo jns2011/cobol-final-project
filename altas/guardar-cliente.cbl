@@ -20,11 +20,10 @@
              05 CLI-EMAIL  PIC X(50).
 
        WORKING-STORAGE SECTION.
-        01 FILE-STATUS PIC XX.
-           COPY "includes/file-status.cbl".
+       COPY "file-status.cbl".
 
        LINKAGE SECTION.
-        01 CLAVE-BANCARIA PIC 9(6).
+       COPY "clave-bancaria.cbl".
         01 CSV-REGISTRO.
              05 CBF  PIC 9(6).
              05 APELLIDO PIC X(30).
@@ -33,7 +32,7 @@
 
         PROCEDURE DIVISION USING CLAVE-BANCARIA, CSV-REGISTRO.
         MAIN-GUARDAR-CLIENTE.
-           COPY "includes/open-file-client.cbl".
+           COPY "open-file-client.cbl".
 
            MOVE CLAVE-BANCARIA TO CLI-CBF
            MOVE APELLIDO TO CLI-APELLIDO
@@ -51,6 +50,6 @@
              NOT INVALID KEY
                  DISPLAY "CLIENTE GUARDADO CON EXITO."
 
-           COPY "includes/close-file-client.cbl".
+           COPY "close-file-client.cbl".
 
            GOBACK.
