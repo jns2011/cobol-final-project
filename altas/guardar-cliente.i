@@ -22,10 +22,15 @@
 
  WORKING-STORAGE SECTION.
  01 FILE-STATUS PIC XX.
+ 
+#line 1 "includes\file-status.cbl"
  88 FILE-SUCCESS VALUE "00".
  88 FILE-NOT-FOUND VALUE "23".
  88 FILE-NOT-READY VALUE "35".
  88 FILE-DUPLICATE VALUE "22".
+
+#line 24 "guardar-cliente.cbl"
+
 
  LINKAGE SECTION.
  01 CLAVE-BANCARIA PIC 9(6).
@@ -50,7 +55,7 @@
  STOP RUN
  END-IF
  END-IF.
-#line 39 "guardar-cliente.cbl"
+#line 36 "guardar-cliente.cbl"
 
 
  MOVE CLAVE-BANCARIA TO CLI-CBF
@@ -73,7 +78,7 @@
 #line 1 "includes\close-file-client.cbl"
  CLOSE CUENTAS-FILE
 
-#line 57 "guardar-cliente.cbl"
+#line 54 "guardar-cliente.cbl"
 
 
  GOBACK.

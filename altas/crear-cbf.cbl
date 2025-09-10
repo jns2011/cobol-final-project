@@ -18,24 +18,15 @@
        WORKING-STORAGE SECTION.
        01 EOF-FLAG      PIC 9 VALUE 0.
        01 ID-CUENTA-STR PIC X(6).
-         01  FILE-STATUS            PIC XX.
-           88  FILE-SUCCESS       VALUE "00".
-           88  FILE-NOT-FOUND     VALUE "23".
-           88  FILE-NOT-READY     VALUE "35".
-           88  FILE-DUPLICATE     VALUE "22".
+       COPY "file-status.cbl".
 
        LINKAGE SECTION.
-         01 ID-CUENTA.
-           05 ID-D1   PIC 9.
-           05 ID-D2   PIC 9.
-           05 ID-D3   PIC 9.
-           05 ID-D4   PIC 9.
-           05 ID-D5   PIC 9.
-       01 CLAVE-BANCARIA PIC X(6).
+       COPY "id-cuentas.cbl".
+       COPY "clave-bancaria.cbl".
 
        PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.
 
-           COPY "includes/open.cbl".
+       COPY "open.cbl".
 
            PERFORM UNTIL EOF-FLAG = 1
              READ CSV-FILE
@@ -66,6 +57,6 @@
              END-READ
            END-PERFORM.
 
-           COPY "includes/close.cbl".
+           COPY "close.cbl".
 
            GOBACK.
