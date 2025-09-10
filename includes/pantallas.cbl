@@ -4,23 +4,10 @@
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
            DECIMAL-POINT IS COMMA.
-       *>INPUT-OUTPUT SECTION.
-       *>FILE-CONTROL.
-           *>SELECT USUARIOS ASSIGN TO 'clientes.dat'
-           *>ORGANIZATION IS INDEXED 
-           *>ACCESS MODE IS DYNAMIC 
-           *>RECORD KEY IS WS-CBF
-           *>FILE STATUS IS ESTADO.
+       
 
        DATA DIVISION.
-       *>FILE SECTION.
-       *>FD  USUARIOS.
-       *>01  PERSONA.
-           *>05 ID PIC 9(5).
-           *>05 APELLIDO PIC A(30).
-           *>05 NOMBRE PIC A(30).
-           *>05 EMAIL PIC X(50).
-
+       
        WORKING-STORAGE SECTION.
        01  MENU-CHOICE                    PIC 9.
            88 CONSULTA-SALDO            VALUE 1.
@@ -34,15 +21,15 @@
        01  WS-PIN-NUM           PIC 9(6).
        01  WS-VALIDO     PIC X VALUE 'N'. 
 
-       *>DEPOSITO
+       
        01  WS-MONTO-FORMAT       PIC ZZZ.ZZZ.ZZ9.
        01  WS-MONTO PIC 9(11).
        01  WS-OPCION-DEP PIC 9(1) VALUE 0.
 
-       *>MAIN
+       
        01  WS-FIN PIC x(1).
 
-       *>EXTRACCION
+       
        01  WS-SALDO            PIC 9(11) VALUE 0.
        01  WS-SALDO-FORMAT PIC ZZZ.ZZZ.ZZ9.
        01  WS-MONTO-EXT                PIC 9(9).    
@@ -50,16 +37,14 @@
        01  WS-OPCION-EXT               PIC 9(1).
        01  TOPE-EXT       PIC 9(6) VALUE 100000.
 
-       *>SALDO
+       
        01  WS-OPCION-SALDO   PIC 9(9) VALUE 0.
 
-       *>TRANSFERENCIA
+       
        01  WS-CBF-DESTINO                 PIC 9(6).
-       01  WS-MONTO-TRANSF   PIC 9(9) value 100000.
+       01  WS-MONTO-TRANSF   PIC 9(9) VALUE 100000.
        01  WS-MONTO-TRANSF-FOR PIC Z.ZZZ.ZZ9.
 
-
-       *>ULT-MOVIMIENTOS
        01  WS-OPCION-MOV PIC 9(1).
        01  WS-MOVIMIENTOS.
            05 WS-MOV-ITEM OCCURS 5 TIMES.
@@ -150,11 +135,6 @@
                PERFORM MENU-OPERACIONES
            END-IF.
 
-           *>MOSTRAR SALDO ACTUAL
-           *>DISPLAY "Su saldo actual es de: $ " 
-           *>1. Enviar por e-mail (Vuelve a la pantalla de operaciones)
-           *>2. Cancelar (Vuelve a la pantalla de operaciones)
-
        MENU-TRANSFERENCIA.
            DISPLAY "Ingrese el CBF destino:"
            ACCEPT WS-CBF-DESTINO
@@ -179,11 +159,6 @@
                ACCEPT OMITTED
                PERFORM MENU-OPERACIONES
  	       END-IF.
-
-           *>Deberá solicitar la CBF de destino.
-           *>Deberá solicitar el monto a transferir y las siguientes 
-           *>opciones1. Transferir 
-           *>2. Cancelar (Vuelve a la pantalla de operaciones)
 
        MENU-DEPOSITO.
            MOVE 0 TO WS-OPCION-DEP
@@ -221,10 +196,6 @@
            IF WS-OPCION-DEP = 2
               PERFORM MENU-OPERACIONES
            END-IF.
-
-           *>Deberá ingresarse la cantidad a depositar y las siguientes opciones:
-           *>1. Confirmar depósito 
-           *>2. Cancelar (Vuelve a la pantalla de operaciones)
 
        MENU-EXTRACCION.
            MOVE 0 TO WS-OPCION-EXT
@@ -285,10 +256,6 @@
                PERFORM MENU-OPERACIONES
            END-IF.
 
-           *>Deberá ingresar la cantidad a extraer y las siguientes 
-           *>opciones:1. Extraer
-           *>2. Cancelar (Vuelve a la pantalla de operaciones)
-
        MENU-ULT-MOVIMIENTOS.
            DISPLAY "====== Ultimos Movimientos ======"
            PERFORM VARYING WS-INDICE-MOV FROM 1 BY 1 
@@ -296,8 +263,7 @@
            
                 DISPLAY WS-MOV-TIPO(WS-INDICE-MOV) " por $" 
                         WS-MOV-MONTO(WS-INDICE-MOV)
-                
-           
+                   
            END-PERFORM
 
            MOVE 0 TO WS-OPCION-MOV
