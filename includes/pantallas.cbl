@@ -1,6 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. cajero.
-       AUTHOR. Romero Celeste, Jeandrevin Eric, Romero Juan
+       PROGRAM-ID. principal.
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
@@ -289,4 +288,3 @@
            IF WS-OPCION-MOV = 2
                PERFORM MENU-OPERACIONES
            END-IF.
-           

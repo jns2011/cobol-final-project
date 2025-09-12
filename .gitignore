@@ -4,3 +4,8 @@
 */*.c.l.h
 altas
 cajero
+*.i
+*/*.dll
+*/*.exe
+altas/altas
+cajero/cajero

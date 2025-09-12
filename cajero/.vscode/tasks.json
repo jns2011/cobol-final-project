@@ -7,9 +7,8 @@
             "command": "cobc",
             "args": [
                 "-x",
-                "-std=cobol85",
                 "-g",
-                "-I ./copybooks",
+                "-I ./includes",
                 "-debug",
                 "${file}"
             ],
