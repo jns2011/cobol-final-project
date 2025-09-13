@@ -5,10 +5,9 @@
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
            DECIMAL-POINT IS COMMA.
-       
 
        DATA DIVISION.
-       
+
        WORKING-STORAGE SECTION.
        01  MENU-CHOICE                    PIC 9.
            88 CONSULTA-SALDO            VALUE 1.
@@ -22,7 +21,7 @@
        01  WS-PIN-NUM           PIC 9(6).
        01  WS-VALIDO     PIC X VALUE 'N'. 
 
-       
+    
        01  WS-MONTO-FORMAT       PIC ZZZ.ZZZ.ZZ9.
        01  WS-MONTO PIC 9(11).
        01  WS-OPCION-DEP PIC 9(1) VALUE 0.
@@ -31,10 +30,10 @@
        01  WS-FIN PIC x(1).
 
        
-       01  WS-SALDO            PIC 9(11) VALUE 0.
-       01  WS-SALDO-FORMAT PIC ZZZ.ZZZ.ZZ9.
-       01  WS-MONTO-EXT                PIC 9(9).    
-       01  WS-MONTO-EXT-FOR PIC Z.ZZZ.ZZ9.      
+       01  WS-SALDO            PIC S9(11) VALUE 0.
+       01  WS-SALDO-FORMAT PIC -ZZZ.ZZZ.ZZ9.
+       01  WS-MONTO-EXT                PIC S9(9).    
+       01  WS-MONTO-EXT-FOR PIC -Z.ZZZ.ZZ9.      
        01  WS-OPCION-EXT               PIC 9(1).
        01  TOPE-EXT       PIC 9(6) VALUE 100000.
 
@@ -43,20 +42,34 @@
 
        
        01  WS-CBF-DESTINO                 PIC 9(6).
-       01  WS-MONTO-TRANSF   PIC 9(9) VALUE 100000.
-       01  WS-MONTO-TRANSF-FOR PIC Z.ZZZ.ZZ9.
+       01  WS-MONTO-TRANSF   PIC S9(9) value 100000. 
+       01  WS-MONTO-TRANSF-FOR PIC -Z.ZZZ.ZZ9. 
 
+
+       
        01  WS-OPCION-MOV PIC 9(1).
        01  WS-MOVIMIENTOS.
            05 WS-MOV-ITEM OCCURS 5 TIMES.
               10 WS-MOV-TIPO        PIC X(20).
-              10 WS-MOV-MONTO        PIC 9(9).
+              10 WS-MOV-MONTO        PIC S9(9).
               10 WS-MOV-ANIO         PIC 9(4).
               10 WS-MOV-MES          PIC 9(2).
               10 WS-MOV-DIA          PIC 9(2).
+              10 WS-MOV-HORA        PIC 9(8). 
+              
        01  WS-INDICE-MOV        PIC 9 VALUE 0.
+       01  WS-INDICE-LISTAR     PIC 9 VALUE 0. 
 
-
+       01  WS-FECHA-HORA.
+           05 WS-ANIO    PIC 9(4).
+           05 WS-MES     PIC 9(2).
+           05 WS-DIA     PIC 9(2).
+           
+       01  WS-HORA-COMPLETA PIC 9(8). 
+       01  WS-HH               PIC 9(2).
+       01  WS-MM               PIC 9(2).
+       01  WS-SS               PIC 9(2).
+       
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
            MOVE 'N' TO WS-FIN
@@ -157,9 +170,19 @@
                  MOVE WS-MONTO-TRANSF TO WS-MOV-MONTO(WS-INDICE-MOV)
                DISPLAY "Trasferencia exitosa de $" WS-MONTO-TRANSF-FOR
                DISPLAY "Su nuevo saldo es de: $" WS-SALDO-FORMAT
+                 ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD    
+                 ACCEPT WS-HORA-COMPLETA      FROM TIME
+                 MOVE WS-ANIO    TO WS-MOV-ANIO(WS-INDICE-MOV)
+                 MOVE WS-MES     TO WS-MOV-MES(WS-INDICE-MOV)
+                 MOVE WS-DIA     TO WS-MOV-DIA(WS-INDICE-MOV)
+                 MOVE WS-HORA-COMPLETA TO WS-MOV-HORA(WS-INDICE-MOV)
+                 MOVE WS-HORA-COMPLETA(1:2) TO WS-HH
+                 MOVE WS-HORA-COMPLETA(3:2) TO WS-MM
+                 MOVE WS-HORA-COMPLETA(5:2) TO WS-SS
                ACCEPT OMITTED
                PERFORM MENU-OPERACIONES
  	       END-IF.
+
 
        MENU-DEPOSITO.
            MOVE 0 TO WS-OPCION-DEP
@@ -169,7 +192,7 @@
            DISPLAY "1. Confirmar Deposito"
            DISPLAY "2. Volver a pantalla de operaciones"
            ACCEPT WS-OPCION-DEP
-           
+
            EVALUATE WS-OPCION-DEP
               WHEN 1
                  MOVE WS-MONTO TO WS-MONTO-FORMAT
@@ -183,6 +206,16 @@
                  ADD 1 TO WS-INDICE-MOV
                  MOVE 'Deposito' TO WS-MOV-TIPO(WS-INDICE-MOV)
                  MOVE WS-MONTO TO WS-MOV-MONTO(WS-INDICE-MOV)
+                 ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD
+                 ACCEPT WS-HORA-COMPLETA      FROM TIME
+                 MOVE WS-ANIO    TO WS-MOV-ANIO(WS-INDICE-MOV)
+                 MOVE WS-MES     TO WS-MOV-MES(WS-INDICE-MOV)
+                 MOVE WS-DIA     TO WS-MOV-DIA(WS-INDICE-MOV)
+                 MOVE WS-HORA-COMPLETA TO WS-MOV-HORA(WS-INDICE-MOV)
+                 MOVE WS-HORA-COMPLETA(1:2) TO WS-HH
+                 MOVE WS-HORA-COMPLETA(3:2) TO WS-MM
+                 MOVE WS-HORA-COMPLETA(5:2) TO WS-SS
+                 
                  ACCEPT OMITTED
                  MOVE 2 TO WS-OPCION-DEP
               WHEN 2
@@ -244,6 +277,15 @@
                     MOVE 'Extraccion' TO WS-MOV-TIPO(WS-INDICE-MOV)
                     MOVE WS-MONTO-EXT TO WS-MOV-MONTO(WS-INDICE-MOV)
                     DISPLAY "Saldo restante: $" WS-SALDO-FORMAT
+                    ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD  
+                    ACCEPT WS-HORA-COMPLETA      FROM TIME
+                    MOVE WS-ANIO    TO WS-MOV-ANIO(WS-INDICE-MOV)
+                    MOVE WS-MES     TO WS-MOV-MES(WS-INDICE-MOV)
+                    MOVE WS-DIA     TO WS-MOV-DIA(WS-INDICE-MOV)
+                    MOVE WS-HORA-COMPLETA TO WS-MOV-HORA(WS-INDICE-MOV)
+                    MOVE WS-HORA-COMPLETA(1:2) TO WS-HH
+                    MOVE WS-HORA-COMPLETA(3:2) TO WS-MM
+                    MOVE WS-HORA-COMPLETA(5:2) TO WS-SS
                     ACCEPT OMITTED
                     MOVE 2 TO WS-OPCION-EXT
                  WHEN 2
@@ -259,12 +301,20 @@
 
        MENU-ULT-MOVIMIENTOS.
            DISPLAY "====== Ultimos Movimientos ======"
-           PERFORM VARYING WS-INDICE-MOV FROM 1 BY 1 
-                UNTIL WS-INDICE-MOV > 5
-           
-                DISPLAY WS-MOV-TIPO(WS-INDICE-MOV) " por $" 
-                        WS-MOV-MONTO(WS-INDICE-MOV)
-                   
+           PERFORM VARYING WS-INDICE-LISTAR FROM 1 BY 1 
+               UNTIL WS-INDICE-LISTAR > 5
+               IF WS-MOV-TIPO(WS-INDICE-LISTAR) NOT = SPACES
+                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(1:2) TO WS-HH
+                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(3:2) TO WS-MM
+                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(5:2) TO WS-SS
+
+                DISPLAY WS-MOV-TIPO(WS-INDICE-LISTAR) " por $" 
+                    WS-MOV-MONTO(WS-INDICE-LISTAR)
+                    " - Fecha: " WS-MOV-DIA(WS-INDICE-LISTAR) "/"
+                                 WS-MOV-MES(WS-INDICE-LISTAR) "/"
+                                 WS-MOV-ANIO(WS-INDICE-LISTAR)
+                    " " WS-HH ":" WS-MM ":" WS-SS
+               END-IF
            END-PERFORM
 
            MOVE 0 TO WS-OPCION-MOV
@@ -289,4 +339,5 @@
            IF WS-OPCION-MOV = 2
                PERFORM MENU-OPERACIONES
            END-IF.
+
            
