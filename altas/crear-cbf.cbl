@@ -18,16 +18,17 @@
        WORKING-STORAGE SECTION.
        01 EOF-FLAG      PIC 9 VALUE 0.
        01 ID-CUENTA-STR PIC X(6).
-       COPY "file-status.cbl".
+       
+       COPY "file-status.cpy".
+       COPY "cliente.cpy".
 
        LINKAGE SECTION.
-       COPY "id-cuentas.cbl".
-       COPY "clave-bancaria.cbl".
+       COPY "id-cuentas.cpy".
+       COPY "clave-bancaria.cpy".
 
        PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.
 
-       COPY "open.cbl".
-
+           OPEN INPUT CSV-FILE.
            PERFORM UNTIL EOF-FLAG = 1
              READ CSV-FILE
                AT END MOVE 1 TO EOF-FLAG
@@ -42,21 +43,21 @@
            MOVE ID-CUENTA-STR(5:1) TO ID-D5
 
 
-             CALL "CALCULATE-CBF" USING ID-CUENTA, CLAVE-BANCARIA
-             DISPLAY "Cuenta: " ID-CUENTA-STR
+           CALL "CALCULATE-CBF" USING ID-CUENTA, CLAVE-BANCARIA
+           DISPLAY "Cuenta: " ID-CUENTA-STR
              " | Clave Bancaria: " CLAVE-BANCARIA
 
-             CALL "BUSCAR-CLIENTE" USING CLAVE-BANCARIA, ID-CUENTA-STR
+           MOVE CLAVE-BANCARIA TO P-CBF
 
-             IF ID-CUENTA-STR = "000000"
-                 CALL "GUARDAR-CLIENTE" USING CLAVE-BANCARIA,
-                  CSV-REGISTRO
-             ELSE
-               DISPLAY "Cliente ya existente"
-                END-IF
+           CALL "BUSCAR-CLIENTE" USING CLIENTE
+
+           IF P-CBF = "000000"
+             CALL "GUARDAR-CLIENTE" USING CLAVE-BANCARIA,CSV-REGISTRO
+           ELSE
+             DISPLAY "Cliente ya existente"
+           END-IF
              END-READ
            END-PERFORM.
 
-           COPY "close.cbl".
-
+           CLOSE CSV-FILE.
            GOBACK.

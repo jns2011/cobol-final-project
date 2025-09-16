@@ -13,18 +13,16 @@
        DATA DIVISION.
        FILE SECTION.
        FD  CUENTAS-FILE.
-       01 C-REGISTRO.
-             05 CLI-CBF  PIC 9(6).
-             05 CLI-APELLIDO PIC X(30).
-             05 CLI-NOMBRE PIC X(30).
-             05 CLI-EMAIL  PIC X(50).
+       
+       COPY "registro-cliente.cpy".
 
        WORKING-STORAGE SECTION.
-       COPY "file-status.cbl".
+       COPY "file-status.cpy".
 
        LINKAGE SECTION.
-       COPY "clave-bancaria.cbl".
-        01 CSV-REGISTRO.
+       COPY "clave-bancaria.cpy".
+       
+       01 CSV-REGISTRO.
              05 CBF  PIC 9(6).
              05 APELLIDO PIC X(30).
              05 NOMBRE PIC X(30).
@@ -32,14 +30,14 @@
 
         PROCEDURE DIVISION USING CLAVE-BANCARIA, CSV-REGISTRO.
         MAIN-GUARDAR-CLIENTE.
-           COPY "open-file-client.cbl".
+           COPY "open-file-client.cpy".
 
            MOVE CLAVE-BANCARIA TO CLI-CBF
            MOVE APELLIDO TO CLI-APELLIDO
            MOVE NOMBRE TO CLI-NOMBRE
            MOVE EMAIL TO CLI-EMAIL
 
-           WRITE C-REGISTRO
+           WRITE REGISTRO-CLIENTE
                INVALID KEY
                  IF FILE-DUPLICATE
                   DISPLAY "Error: Clave Bancaria Existente!"
@@ -50,6 +48,6 @@
              NOT INVALID KEY
                  DISPLAY "CLIENTE GUARDADO CON EXITO."
 
-           COPY "close-file-client.cbl".
+           COPY "close-file-client.cpy".
 
            GOBACK.

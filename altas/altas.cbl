@@ -11,8 +11,8 @@
           88 CREATE-CBF   VALUE 1.
           88 EXIT-PROGRAM VALUE 2.
 
-       COPY "id-cuentas.cbl".
-       COPY "clave-bancaria.cbl".
+       COPY "id-cuentas.cpy".
+       COPY "clave-bancaria.cpy".
 
        PROCEDURE DIVISION.
        MAIN-PROCEDURE.
