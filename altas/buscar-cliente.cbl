@@ -14,26 +14,25 @@
 
        WORKING-STORAGE SECTION.
        COPY "file-status.cpy".
-       
+
        LINKAGE SECTION.
-       COPY "cliente.cpy". 
+       COPY "cliente.cpy".
 
        PROCEDURE DIVISION USING CLIENTE.
-       
+
        COPY "open-file-client.cpy".
-      
+
         MOVE P-CBF TO CLI-CBF.
         READ CUENTAS-FILE
                KEY IS CLI-CBF
                INVALID KEY
                    MOVE "000000" TO P-CBF
-               NOT INVALID KEY 
-                   MOVE REGISTRO-CLIENTE TO CLIENTE                   
-           END-READ.              
-       
+               NOT INVALID KEY
+                   MOVE REGISTRO-CLIENTE TO CLIENTE
+           END-READ.
+
        COPY "close-file-client.cpy".
-       
+
        GOBACK.
-       
+
        END PROGRAM buscar-cliente.
-       
