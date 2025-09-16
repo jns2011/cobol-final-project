@@ -1,15 +1,39 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. BUSCAR-CLIENTE.
+       PROGRAM-ID. buscar-cliente.
        ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT CUENTAS-FILE ASSIGN TO "cuentas.dat"
+               ORGANIZATION IS INDEXED
+               ACCESS MODE IS DYNAMIC
+               RECORD KEY IS CLI-CBF.
        DATA DIVISION.
+       FILE SECTION.
+       FD  CUENTAS-FILE.
+       COPY "registro-cliente.cpy".
+
        WORKING-STORAGE SECTION.
-
+       COPY "file-status.cpy".
+       
        LINKAGE SECTION.
-        01 CLAVE-BANCARIA PIC 9(6).
-        01 ID-CUENTA-STR PIC X(6).
+       COPY "cliente.cpy". 
 
-        PROCEDURE DIVISION USING CLAVE-BANCARIA, ID-CUENTA-STR.
-            DISPLAY "ESTA FUNCION LA DESARROLLA EL EQUIPO DE PABLO".
-            MOVE "000000" TO ID-CUENTA-STR
-
-           GOBACK.
+       PROCEDURE DIVISION USING CLIENTE.
+       
+       COPY "open-file-client.cpy".
+      
+        MOVE P-CBF TO CLI-CBF.
+        READ CUENTAS-FILE
+               KEY IS CLI-CBF
+               INVALID KEY
+                   MOVE "000000" TO P-CBF
+               NOT INVALID KEY 
+                   MOVE REGISTRO-CLIENTE TO CLIENTE                   
+           END-READ.              
+       
+       COPY "close-file-client.cpy".
+       
+       GOBACK.
+       
+       END PROGRAM buscar-cliente.
+       

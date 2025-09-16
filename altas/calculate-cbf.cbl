@@ -9,8 +9,8 @@
 
 
        LINKAGE SECTION.
-       COPY "id-cuentas.cbl".
-       COPY "clave-bancaria.cbl".
+       COPY "id-cuentas.cpy".
+       COPY "clave-bancaria.cpy".
 
 
        PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.

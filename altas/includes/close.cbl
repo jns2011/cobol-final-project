@@ -1,2 +1,0 @@
-           CLOSE CSV-FILE
-

@@ -1,1 +1,0 @@
-            OPEN INPUT CSV-FILE
