@@ -6,9 +6,26 @@
        SPECIAL-NAMES.
            DECIMAL-POINT IS COMMA.
 
+       INPUT-OUTPUT SECTION.
+
+       FILE-CONTROL.
+           SELECT CUENTAS-FILE ASSIGN TO "altas\includes\cuentas.dat" 
+              ORGANIZATION IS INDEXED
+               ACCESS MODE IS DYNAMIC
+              RECORD KEY IS CLI-CBF.
+
+       
+
        DATA DIVISION.
+       FILE SECTION.
+       FD  CUENTAS-FILE.
+           COPY "registro-cliente.cpy".
 
        WORKING-STORAGE SECTION.
+
+           COPY "cliente.cpy".
+
+
        01  MENU-CHOICE                    PIC 9.
            88 CONSULTA-SALDO            VALUE 1.
            88 REALIZAR-TRANSFERENCIA    VALUE 2.
@@ -69,6 +86,8 @@
        01  WS-HH               PIC 9(2).
        01  WS-MM               PIC 9(2).
        01  WS-SS               PIC 9(2).
+
+       
        
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -92,13 +111,17 @@
            ACCEPT WS-CBF
                
                IF WS-CBF IS NUMERIC AND LENGTH OF WS-CBF = 6
-                   MOVE WS-CBF TO WS-PIN-NUM
+                   CALL 'buscar-cliente' USING CLIENTE
+                   IF (P-CBF NOT= '000000')
                    MOVE 'S' TO WS-VALIDO
+                   
                    PERFORM MENU-OPERACIONES
                ELSE
-                   DISPLAY "ERROR: Debe ingresar 6 digitos numericos"
+                   DISPLAY "CBF NO VALIDO"
                END-IF
            END-PERFORM.
+
+           
 
        MENU-OPERACIONES.
            CALL "SYSTEM" USING "CLS".

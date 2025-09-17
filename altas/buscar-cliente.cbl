@@ -3,7 +3,7 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CUENTAS-FILE ASSIGN TO "cuentas.dat"
+           SELECT CUENTAS-FILE ASSIGN TO "altas\includes\cuentas.dat"
                ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS CLI-CBF.
@@ -16,7 +16,7 @@
        COPY "file-status.cpy".
        
        LINKAGE SECTION.
-       COPY "cliente.cpy". 
+       COPY "cliente.cpy".
 
        PROCEDURE DIVISION USING CLIENTE.
        
