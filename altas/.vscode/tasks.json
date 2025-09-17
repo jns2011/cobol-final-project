@@ -9,12 +9,14 @@
         "-x",       // Generate executable
         "-I", 
         "${workspaceFolder}/includes",
+        "-I",
+        "../includes",
         "-g",       // Debug symbols (optional)
         "-fmf",
         "-o",       // Output file flag
         "${fileBasenameNoExtension}.exe",  // Output filename
         "${file}",
-        "buscar-cliente.cbl",
+        "../subprogramas/buscar-cliente.cbl",
         "calculate-cbf.cbl",
         "crear-cbf.cbl",
         "guardar-cliente.cbl"
