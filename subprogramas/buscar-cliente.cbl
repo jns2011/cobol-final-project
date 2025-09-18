@@ -9,15 +9,18 @@
                RECORD KEY IS CLI-CBF.
        DATA DIVISION.
        FILE SECTION.
-       FD  CLIENTE-FILE.
-       COPY "registro-cliente.cbl".
+       FD  CUENTAS-FILE.
+       COPY "registro-cliente.cpy".
 
+       WORKING-STORAGE SECTION.
+       COPY "file-status.cpy".
+       
        LINKAGE SECTION.
-       COPY "cliente.cbl". 
+       COPY "cliente.cpy". 
 
        PROCEDURE DIVISION USING CLIENTE.
        
-       OPEN I-O CLIENTE-FILE.
+       COPY "open-file-client.cpy".
       
         MOVE P-CBF TO CLI-CBF.
         READ CUENTAS-FILE
@@ -28,7 +31,7 @@
                    MOVE REGISTRO-CLIENTE TO CLIENTE                   
            END-READ.              
        
-       CLOSE CUENTAS-FILE.
+       COPY "close-file-client.cpy".
        
        GOBACK.
        

@@ -1,6 +1,6 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. cajero.
-       AUTHOR. Romero Celeste, Jeandrevin Eric, Romero Juan
+       AUTHOR. 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
@@ -23,6 +23,8 @@
 
        WORKING-STORAGE SECTION.
 
+           COPY "transaccion.cpy".
+
            COPY "cliente.cpy".
 
 
@@ -32,7 +34,8 @@
            88 REALIZAR-DEPOSITO         VALUE 3.
            88 REALIZAR-EXTRACCION       VALUE 4.
            88 ULT-MOVIMIENTOS           VALUE 5.
-           88 EXIT-PROGRAM              VALUE 6.
+           88 EXIT-PROGRAM              VALUE 7.
+           88 LISTAR-TRANS VALUE 6.   *>
 
        01  WS-CBF               PIC X(6).
        01  WS-PIN-NUM           PIC 9(6).
@@ -62,7 +65,8 @@
        01  WS-MONTO-TRANSF   PIC S9(9) value 100000. 
        01  WS-MONTO-TRANSF-FOR PIC -Z.ZZZ.ZZ9. 
 
-
+       01  WS-DESCRIPCION-TRANS          PIC X(1). *>nuevas
+       01  WS-MONTO-TRANS                PIC S9(9)V99.
        
        01  WS-OPCION-MOV PIC 9(1).
        01  WS-MOVIMIENTOS.
@@ -111,8 +115,9 @@
            ACCEPT WS-CBF
                
                IF WS-CBF IS NUMERIC AND LENGTH OF WS-CBF = 6
-                   CALL 'buscar-cliente' USING CLIENTE
-                   IF (P-CBF NOT= '000000')
+                   MOVE WS-CBF TO WS-PIN-NUM
+                   *>CALL 'buscar-cliente' USING CLIENTE
+                   *>IF (P-CBF NOT= '000000')
                    MOVE 'S' TO WS-VALIDO
                    
                    PERFORM MENU-OPERACIONES
@@ -132,7 +137,8 @@
            DISPLAY "3.Deposito".
            DISPLAY "4.Extraccion".
            DISPLAY "5.Ultimos Movimientos".
-           DISPLAY "6.Salir".
+           DISPLAY "6.Ver transacciones".
+           DISPLAY "7.Salir"
            DISPLAY "Su opcion: " WITH NO ADVANCING.
            ACCEPT MENU-CHOICE.
            
@@ -143,9 +149,23 @@
                 WHEN REALIZAR-EXTRACCION PERFORM MENU-EXTRACCION
                 WHEN ULT-MOVIMIENTOS PERFORM MENU-ULT-MOVIMIENTOS
                 WHEN EXIT-PROGRAM MOVE 'N' TO WS-FIN 
+                WHEN LISTAR-TRANS CALL 'listar-transacciones'
                 WHEN OTHER DISPLAY "Opcion invalida"
            END-EVALUATE.
            
+       REGISTRAR-TRANSACCION.
+           MOVE WS-PIN-NUM TO P-CBF OF TRANSACCION 
+           MOVE WS-DESCRIPCION-TRANS TO P-DESCRIPCION
+           MOVE WS-MONTO-TRANS TO P-IMPORTE
+    
+           CALL "crear-transaccion" USING TRANSACCION, RESULTADO
+    
+           IF RESULTADO NOT = 0
+               DISPLAY "Error al registrar transaccion en archivo"
+           END-IF.
+
+
+
        MENU-SALDO.
            MOVE 0 TO WS-OPCION-SALDO
            MOVE WS-SALDO TO WS-SALDO-FORMAT
@@ -185,6 +205,11 @@
                SUBTRACT WS-MONTO-TRANSF FROM WS-SALDO
                MOVE WS-SALDO TO WS-SALDO-FORMAT
                MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANSF-FOR
+
+               MOVE "T" TO WS-DESCRIPCION-TRANS 
+               MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
+               PERFORM REGISTRAR-TRANSACCION
+
                IF WS-INDICE-MOV >= 5 
                MOVE 0 TO WS-INDICE-MOV
                END-IF
@@ -222,7 +247,11 @@
                  DISPLAY "Deposito confirmado por $" WS-MONTO-FORMAT
                  COMPUTE WS-SALDO = WS-MONTO + WS-SALDO
                  MOVE WS-SALDO TO WS-SALDO-FORMAT
-                 
+
+                 MOVE "D" TO WS-DESCRIPCION-TRANS 
+                 MOVE WS-MONTO TO WS-MONTO-TRANS
+                 PERFORM REGISTRAR-TRANSACCION
+
                  IF WS-INDICE-MOV >= 5 
                  MOVE 0 TO WS-INDICE-MOV
                  END-IF
@@ -291,7 +320,12 @@
                     COMPUTE WS-SALDO = WS-SALDO - WS-MONTO-EXT
                     MOVE WS-SALDO TO WS-SALDO-FORMAT
                     MOVE WS-MONTO-EXT TO WS-MONTO-EXT-FOR
-                    DISPLAY "Extraccion exitosa de $" WS-MONTO-EXT-FOR
+                    DISPLAY "Extraccion exitosa de $ -" WS-MONTO-EXT-FOR
+
+                    MOVE "E" TO WS-DESCRIPCION-TRANS 
+                    MOVE WS-MONTO-EXT TO WS-MONTO-TRANS
+                    PERFORM REGISTRAR-TRANSACCION
+
                     DISPLAY WS-INDICE-MOV
                     IF WS-INDICE-MOV >= 5 
                     MOVE 0 TO WS-INDICE-MOV
