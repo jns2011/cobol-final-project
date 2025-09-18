@@ -6,11 +6,18 @@
             "type": "shell",
             "command": "cobc",
             "args": [
-                "-x",
-                "-g",
-                "-I ./includes",
-                "-debug",
-                "${file}"
+                "-x",       // Generate executable
+                "-I", 
+                "${workspaceFolder}/includes",
+                "-I",
+                "../includes",
+                "-g",       // Debug symbols (optional)
+                "-fmf",
+                "-o",       // Output file flag
+                "${fileBasenameNoExtension}.exe",
+                "${file}",
+                "crear-transaccion.cbl",
+                "../subprogramas/buscar-cliente.cbl",
             ],
             "group": {
                 "kind": "build",
