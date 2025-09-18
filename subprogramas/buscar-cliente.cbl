@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. buscar-cliente.
+       PROGRAM-ID. BUSCAR-CLIENTE.
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
@@ -34,6 +34,5 @@
        COPY "close-file-client.cpy".
        
        GOBACK.
-       
-       END PROGRAM buscar-cliente.
+       END PROGRAM BUSCAR-CLIENTE.
        
