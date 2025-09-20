@@ -1,6 +1,5 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. GUARDAR-CLIENTE.
-
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
@@ -8,7 +7,7 @@
                ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
                RECORD KEY IS CLI-CBF
-       FILE STATUS IS FILE-STATUS.
+               FILE STATUS IS FILE-STATUS.
 
        DATA DIVISION.
        FILE SECTION.
@@ -20,7 +19,8 @@
        COPY "file-status.cpy".
 
        LINKAGE SECTION.
-       COPY "clave-bancaria.cpy".
+       01 CLAVE-BANCARIA PIC X(6).
+       
        
        01 CSV-REGISTRO.
              05 CBF  PIC 9(6).
@@ -32,10 +32,10 @@
         MAIN-GUARDAR-CLIENTE.
            COPY "open-file-client.cpy".
 
-           MOVE CLAVE-BANCARIA TO CLI-CBF
-           MOVE APELLIDO TO CLI-APELLIDO
-           MOVE NOMBRE TO CLI-NOMBRE
-           MOVE EMAIL TO CLI-EMAIL
+               MOVE CLAVE-BANCARIA TO CLI-CBF
+               MOVE APELLIDO TO CLI-APELLIDO
+               MOVE NOMBRE TO CLI-NOMBRE
+               MOVE EMAIL TO CLI-EMAIL
 
            WRITE REGISTRO-CLIENTE
                INVALID KEY

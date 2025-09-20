@@ -2,15 +2,16 @@
        PROGRAM-ID. CALCULATE-CBF.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 SUMA-DIGITOS   PIC 9(4) VALUE 0.
-       01 TMP            PIC 9(4).
-       01 RESTO          PIC 9(2).
-       01 DV             PIC 9.
+       01  SUMA-DIGITOS   PIC 9(4) VALUE 0.
+       01  TMP            PIC 9(4).
+       01  RESTO          PIC 9(2).
+       01  DV             PIC 9.
 
 
        LINKAGE SECTION.
        COPY "id-cuentas.cpy".
-       COPY "clave-bancaria.cpy".
+       01 CLAVE-BANCARIA PIC X(6).
+       
 
 
        PROCEDURE DIVISION USING ID-CUENTA, CLAVE-BANCARIA.
@@ -46,3 +47,4 @@
            MOVE DV    TO CLAVE-BANCARIA(6:1)
 
            GOBACK.
+           
