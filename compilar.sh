@@ -5,6 +5,7 @@ set -e
 echo "🔧 Compilando subprogramas de SUBPROGRAMAS..."
 cd subprogramas
 cobc -m buscar-cliente.cbl -I../includes
+cp BUSCAR-CLIENTE.dll ../altas/
 cd ..
 
 echo "🔧 Compilando subprogramas de ALTAS..."
