@@ -7,14 +7,11 @@
            DECIMAL-POINT IS COMMA.
 
        INPUT-OUTPUT SECTION.
-
        FILE-CONTROL.
            SELECT CUENTAS-FILE ASSIGN TO "altas\includes\cuentas.dat" 
               ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
               RECORD KEY IS CLI-CBF.
-
-       
 
        DATA DIVISION.
        FILE SECTION.
@@ -34,49 +31,47 @@
            88 REALIZAR-DEPOSITO         VALUE 3.
            88 REALIZAR-EXTRACCION       VALUE 4.
            88 ULT-MOVIMIENTOS           VALUE 5.
+           88 LISTAR-TRANS              VALUE 6.
            88 EXIT-PROGRAM              VALUE 7.
-           88 LISTAR-TRANS VALUE 6.   *>
-
-       01  WS-CBF               PIC X(6).
-       01  WS-PIN-NUM           PIC 9(6).
-       01  WS-VALIDO     PIC X VALUE 'N'. 
-
     
+       01  WS-CBF                      PIC X(6).
+       01  WS-VALIDO            PIC X VALUE 'N'. 
+
        01  WS-MONTO-FORMAT       PIC ZZZ.ZZZ.ZZ9.
-       01  WS-MONTO PIC 9(11).
-       01  WS-OPCION-DEP PIC 9(1) VALUE 0.
+       01  WS-MONTO                    PIC 9(11).
+       01  WS-OPCION-DEP        PIC 9(1) VALUE 0.
 
-       
-       01  WS-FIN PIC x(1).
+       01  WS-FIN                       PIC x(1).
+       01  WS-MENU-FIN                  PIC X(1).
 
-       
-       01  WS-SALDO            PIC S9(11) VALUE 0.
-       01  WS-SALDO-FORMAT PIC -ZZZ.ZZZ.ZZ9.
+       01  WS-SALDO           PIC S9(11) VALUE 0.
+       01  WS-SALDO-FORMAT      PIC -ZZZ.ZZZ.ZZ9.
        01  WS-MONTO-EXT                PIC S9(9).    
-       01  WS-MONTO-EXT-FOR PIC -Z.ZZZ.ZZ9.      
-       01  WS-OPCION-EXT               PIC 9(1).
-       01  TOPE-EXT       PIC 9(6) VALUE 100000.
+       01  WS-MONTO-EXT-FOR       PIC -Z.ZZZ.ZZ9.      
+       01  WS-OPCION-EXT                PIC 9(1).
+       01  TOPE-EXT        PIC 9(6) VALUE 100000.
 
-       
-       01  WS-OPCION-SALDO   PIC 9(9) VALUE 0.
+       01  WS-OPCION-SALDO      PIC 9(9) VALUE 0.
 
-       
-       01  WS-CBF-DESTINO                 PIC 9(6).
+       01  WS-SALDO-CALCULADO      PIC S9(10)V99. 
+       01  WS-SALDO-CALCULADO-FORM PIC Z.ZZZ.ZZ9.
+
+       01  WS-CBF-DESTINO                  PIC 9(6).
        01  WS-MONTO-TRANSF   PIC S9(9) value 100000. 
-       01  WS-MONTO-TRANSF-FOR PIC -Z.ZZZ.ZZ9. 
+       01  WS-MONTO-TRANSF-FOR       PIC -Z.ZZZ.ZZ9. 
 
-       01  WS-DESCRIPCION-TRANS          PIC X(1). *>nuevas
-       01  WS-MONTO-TRANS                PIC S9(9)V99.
+       01  WS-DESCRIPCION-TRANS           PIC X(1). 
+       01  WS-MONTO-TRANS             PIC S9(9)V99.
        
        01  WS-OPCION-MOV PIC 9(1).
        01  WS-MOVIMIENTOS.
            05 WS-MOV-ITEM OCCURS 5 TIMES.
               10 WS-MOV-TIPO        PIC X(20).
-              10 WS-MOV-MONTO        PIC S9(9).
+              10 WS-MOV-MONTO        PIC 9(9). 
               10 WS-MOV-ANIO         PIC 9(4).
               10 WS-MOV-MES          PIC 9(2).
               10 WS-MOV-DIA          PIC 9(2).
-              10 WS-MOV-HORA        PIC 9(8). 
+              10 WS-MOV-HORA         PIC 9(8). 
               
        01  WS-INDICE-MOV        PIC 9 VALUE 0.
        01  WS-INDICE-LISTAR     PIC 9 VALUE 0. 
@@ -91,8 +86,12 @@
        01  WS-MM               PIC 9(2).
        01  WS-SS               PIC 9(2).
 
-       
-       
+       01  WS-CLIENTE-ACTUAL.  
+           05  WS-CBF-ACT      PIC X(6).
+           05  WS-APELLIDO-ACT PIC X(30).
+           05  WS-NOMBRE-ACT   PIC X(30).
+           05  WS-EMAIL-ACT    PIC X(50).
+
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
            MOVE 'N' TO WS-FIN
@@ -111,22 +110,37 @@
        VALIDAR-PIN.
            MOVE 'N' TO WS-VALIDO 
            PERFORM UNTIL WS-VALIDO = 'S'
-           DISPLAY "# Ingrese su CBF de 6 digitos #"
-           ACCEPT WS-CBF
-               
-               IF WS-CBF IS NUMERIC AND LENGTH OF WS-CBF = 6
-                   MOVE WS-CBF TO WS-PIN-NUM
-                   *>CALL 'buscar-cliente' USING CLIENTE
-                   *>IF (P-CBF NOT= '000000')
-                   MOVE 'S' TO WS-VALIDO
-                   
-                   PERFORM MENU-OPERACIONES
-               ELSE
-                   DISPLAY "CBF NO VALIDO"
-               END-IF
-           END-PERFORM.
-
+               DISPLAY "# Ingrese su CBF de 6 digitos #"
+               ACCEPT WS-CBF
+        
+           IF WS-CBF IS NUMERIC
+            AND FUNCTION LENGTH(WS-CBF) = 6
            
+           MOVE WS-CBF TO P-CBF OF CLIENTE
+           CALL 'buscar-cliente' USING CLIENTE
+           
+           IF P-CBF OF CLIENTE NOT = '000000' AND
+              P-CBF OF CLIENTE NOT = SPACES
+               MOVE 'S' TO WS-VALIDO
+               DISPLAY "Cliente encontrado: "  P-NOMBRE " " P-APELLIDO
+               
+                CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                                           WS-SALDO-CALCULADO
+                MOVE WS-SALDO-CALCULADO TO WS-SALDO
+                MOVE WS-SALDO-CALCULADO TO WS-SALDO-CALCULADO-FORM
+                DISPLAY "Saldo actual: $" WS-SALDO-CALCULADO-FORM
+                     
+               ACCEPT OMITTED
+             
+           ELSE
+               DISPLAY "CBF NO VALIDO - Cliente no encontrado"
+           END-IF
+           ELSE
+           DISPLAY "CBF debe contener solo números"
+           END-IF
+           END-PERFORM
+           MOVE 'N' TO WS-MENU-FIN
+           PERFORM MENU-OPERACIONES UNTIL WS-MENU-FIN = 'S'.
 
        MENU-OPERACIONES.
            CALL "SYSTEM" USING "CLS".
@@ -148,23 +162,22 @@
                 WHEN REALIZAR-DEPOSITO PERFORM MENU-DEPOSITO
                 WHEN REALIZAR-EXTRACCION PERFORM MENU-EXTRACCION
                 WHEN ULT-MOVIMIENTOS PERFORM MENU-ULT-MOVIMIENTOS
-                WHEN EXIT-PROGRAM MOVE 'N' TO WS-FIN 
+                WHEN EXIT-PROGRAM MOVE 'S' TO WS-MENU-FIN 
                 WHEN LISTAR-TRANS CALL 'listar-transacciones'
+                    USING P-CBF OF CLIENTE  
                 WHEN OTHER DISPLAY "Opcion invalida"
            END-EVALUATE.
            
        REGISTRAR-TRANSACCION.
-           MOVE WS-PIN-NUM TO P-CBF OF TRANSACCION 
+           MOVE P-CBF OF CLIENTE TO P-CBF OF TRANSACCION 
            MOVE WS-DESCRIPCION-TRANS TO P-DESCRIPCION
            MOVE WS-MONTO-TRANS TO P-IMPORTE
     
            CALL "crear-transaccion" USING TRANSACCION, RESULTADO
-    
+
            IF RESULTADO NOT = 0
                DISPLAY "Error al registrar transaccion en archivo"
            END-IF.
-
-
 
        MENU-SALDO.
            MOVE 0 TO WS-OPCION-SALDO
@@ -193,31 +206,62 @@
            END-IF.
 
        MENU-TRANSFERENCIA.
+           
+           MOVE CLIENTE TO WS-CLIENTE-ACTUAL 
            DISPLAY "Ingrese el CBF destino:"
            ACCEPT WS-CBF-DESTINO
+
+           MOVE WS-CBF-DESTINO TO P-CBF OF CLIENTE
+           CALL 'buscar-cliente' USING CLIENTE
+   
+           IF P-CBF OF CLIENTE = '000000' OR P-CBF OF CLIENTE = SPACES
+               DISPLAY "CBF destino no válido. Operación cancelada."
+               ACCEPT OMITTED
+               MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
+               PERFORM MENU-OPERACIONES
+           ELSE
+           
+           DISPLAY "Nombre del destinatario: " P-NOMBRE " " P-APELLIDO
            DISPLAY "Ingrese monto a transferir:"
-           ACCEPT WS-MONTO-TRANSF 
+           ACCEPT WS-MONTO-TRANSF
+
+           MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
+           
            IF WS-MONTO-TRANSF > WS-SALDO 
                DISPLAY "Fondos insuficientes. Operacion cancelada."
                ACCEPT OMITTED
+                       
                PERFORM MENU-OPERACIONES
            ELSE
-               SUBTRACT WS-MONTO-TRANSF FROM WS-SALDO
-               MOVE WS-SALDO TO WS-SALDO-FORMAT
-               MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANSF-FOR
-
+              
                MOVE "T" TO WS-DESCRIPCION-TRANS 
                MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
                PERFORM REGISTRAR-TRANSACCION
 
-               IF WS-INDICE-MOV >= 5 
-               MOVE 0 TO WS-INDICE-MOV
-               END-IF
-               ADD 1 TO WS-INDICE-MOV
-                 MOVE 'Transferencia' TO WS-MOV-TIPO(WS-INDICE-MOV)
-                 MOVE WS-MONTO-TRANSF TO WS-MOV-MONTO(WS-INDICE-MOV)
-               DISPLAY "Trasferencia exitosa de $" WS-MONTO-TRANSF-FOR
-               DISPLAY "Su nuevo saldo es de: $" WS-SALDO-FORMAT
+               MOVE WS-CBF-DESTINO TO P-CBF OF CLIENTE
+               
+               MOVE "D" TO WS-DESCRIPCION-TRANS 
+               MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
+               PERFORM REGISTRAR-TRANSACCION   
+              
+               MOVE WS-CLIENTE-ACTUAL TO CLIENTE
+                   CALL 'obtener-sald' USING P-CBF OF CLIENTE
+                                            WS-SALDO-CALCULADO
+                   MOVE WS-SALDO-CALCULADO TO WS-SALDO
+                   MOVE WS-SALDO TO WS-SALDO-FORMAT
+                   MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANSF-FOR 
+  
+           IF WS-INDICE-MOV >= 5 
+                MOVE 0 TO WS-INDICE-MOV
+           END-IF
+                ADD 1 TO WS-INDICE-MOV
+                MOVE 'Transferencia' TO WS-MOV-TIPO(WS-INDICE-MOV)
+                MOVE WS-MONTO-TRANSF TO WS-MOV-MONTO(WS-INDICE-MOV) 
+                   
+           DISPLAY "Transferencia exitosa de $ -" WS-MONTO-TRANSF-FOR 
+           DISPLAY "Su nuevo saldo es de: $" WS-SALDO-FORMAT
+
+               
                  ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD    
                  ACCEPT WS-HORA-COMPLETA      FROM TIME
                  MOVE WS-ANIO    TO WS-MOV-ANIO(WS-INDICE-MOV)
@@ -251,6 +295,10 @@
                  MOVE "D" TO WS-DESCRIPCION-TRANS 
                  MOVE WS-MONTO TO WS-MONTO-TRANS
                  PERFORM REGISTRAR-TRANSACCION
+
+                 CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                                          WS-SALDO-CALCULADO 
+                 MOVE WS-SALDO-CALCULADO TO WS-SALDO 
 
                  IF WS-INDICE-MOV >= 5 
                  MOVE 0 TO WS-INDICE-MOV
@@ -326,6 +374,10 @@
                     MOVE WS-MONTO-EXT TO WS-MONTO-TRANS
                     PERFORM REGISTRAR-TRANSACCION
 
+                    CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                                              WS-SALDO-CALCULADO 
+                    MOVE WS-SALDO-CALCULADO TO WS-SALDO 
+
                     DISPLAY WS-INDICE-MOV
                     IF WS-INDICE-MOV >= 5 
                     MOVE 0 TO WS-INDICE-MOV
@@ -357,38 +409,34 @@
            END-IF.
 
        MENU-ULT-MOVIMIENTOS.
-           DISPLAY "====== Ultimos Movimientos ======"
-           PERFORM VARYING WS-INDICE-LISTAR FROM 1 BY 1 
-               UNTIL WS-INDICE-LISTAR > 5
-               IF WS-MOV-TIPO(WS-INDICE-LISTAR) NOT = SPACES
-                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(1:2) TO WS-HH
-                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(3:2) TO WS-MM
-                MOVE WS-MOV-HORA(WS-INDICE-LISTAR)(5:2) TO WS-SS
-
-                DISPLAY WS-MOV-TIPO(WS-INDICE-LISTAR) " por $" 
-                    WS-MOV-MONTO(WS-INDICE-LISTAR)
-                    " - Fecha: " WS-MOV-DIA(WS-INDICE-LISTAR) "/"
-                                 WS-MOV-MES(WS-INDICE-LISTAR) "/"
-                                 WS-MOV-ANIO(WS-INDICE-LISTAR)
-                    " " WS-HH ":" WS-MM ":" WS-SS
-               END-IF
-           END-PERFORM
-
+           DISPLAY " "
+           DISPLAY "====== Historial de Movimientos ======"
+           DISPLAY " "
+           
+           CALL 'listar-ult-mov' 
+                USING P-CBF OF CLIENTE, 10 
+           
+           DISPLAY " "
            MOVE 0 TO WS-OPCION-MOV
            PERFORM UNTIL WS-OPCION-MOV = 1 OR WS-OPCION-MOV = 2
-              DISPLAY "1. Enviar por e-mail"
+              DISPLAY "1. Enviar historial por e-mail"
               DISPLAY "2. Volver a pantalla de operaciones"
+              DISPLAY "Su opcion: " WITH NO ADVANCING
               ACCEPT WS-OPCION-MOV
+              DISPLAY " "
 
            EVALUATE WS-OPCION-MOV
                   WHEN 1
-                      DISPLAY "Enviando ultimos movimientos por email"
+                      DISPLAY "Enviando historial por email..."
+                      DISPLAY "Email enviado correctamente."
+                      DISPLAY " "
                       ACCEPT OMITTED
                       MOVE 2 TO WS-OPCION-MOV
                   WHEN 2
                       CONTINUE
                   WHEN OTHER
-                      DISPLAY "Opcion invalida"
+                      DISPLAY "Opcion invalida. Intente nuevamente."
+                      DISPLAY " "
                       ACCEPT OMITTED
               END-EVALUATE
            END-PERFORM
@@ -396,5 +444,5 @@
            IF WS-OPCION-MOV = 2
                PERFORM MENU-OPERACIONES
            END-IF.
-
+           
            

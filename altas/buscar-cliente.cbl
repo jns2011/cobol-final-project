@@ -22,11 +22,11 @@
        
        COPY "open-file-client.cpy".
       
-        MOVE P-CBF TO CLI-CBF.
+        MOVE P-CBF OF CLIENTE TO CLI-CBF.
         READ CUENTAS-FILE
                KEY IS CLI-CBF
                INVALID KEY
-                   MOVE "000000" TO P-CBF
+                   MOVE "000000" TO P-CBF OF CLIENTE
                NOT INVALID KEY 
                    MOVE REGISTRO-CLIENTE TO CLIENTE                   
            END-READ.              
