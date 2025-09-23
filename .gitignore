@@ -5,3 +5,7 @@
 *.i
 */*.dll
 */*.exe
+*.exe
+*.dat
+*/*.dat
+*/*.exe

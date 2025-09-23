@@ -34,7 +34,7 @@
        PROCEDURE DIVISION USING LK-CBF, LK-CANTIDAD.
        MAIN-PARA.
            IF LK-CANTIDAD = 0 OR LK-CANTIDAD > 50
-               MOVE 40 TO WS-CANTIDAD-MAX *>antes eran 10
+               MOVE 40 TO WS-CANTIDAD-MAX 
            ELSE
                MOVE LK-CANTIDAD TO WS-CANTIDAD-MAX
            END-IF
