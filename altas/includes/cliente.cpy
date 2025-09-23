@@ -3,5 +3,6 @@
            05  P-APELLIDO        PIC X(30).
            05  P-NOMBRE          PIC X(30).
            05  P-EMAIL           PIC X(50).
+           05  SALDO      PIC S9(20).
 
            
