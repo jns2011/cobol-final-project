@@ -134,7 +134,9 @@
                CALL "SYSTEM" USING "CLS"
                DISPLAY "Cliente encontrado: "  P-NOMBRE " " P-APELLIDO
                
-                CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+
+                CALL 'obtener-saldo' USING P-CBF OF CLIENTE 
+
                                            WS-SALDO-CALCULADO
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO-CALCULADO-FORM
