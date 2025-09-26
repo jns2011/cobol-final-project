@@ -1,5 +1,5 @@
-  IDENTIFICATION DIVISION.
-       PROGRAM-ID. obtener-sald.
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. obtener-saldo.
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.

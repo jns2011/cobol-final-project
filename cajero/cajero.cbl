@@ -1,4 +1,4 @@
-              IDENTIFICATION DIVISION.
+       IDENTIFICATION DIVISION.
        PROGRAM-ID. cajero.
        AUTHOR. 
        ENVIRONMENT DIVISION.
@@ -92,6 +92,7 @@
            05  WS-NOMBRE-ACT   PIC X(30).
            05  WS-EMAIL-ACT    PIC X(50).
 
+    
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
            MOVE 'N' TO WS-FIN
@@ -102,15 +103,23 @@
            STOP RUN.
            
        DISPLAY-MENU.
-           DISPLAY "==============================".
-           DISPLAY "=====Bienvenido al Cajero=====".
-           DISPLAY "==============================".
+           DISPLAY SPACES.
+           DISPLAY "*********************************".
+           DISPLAY "*                               *".
+           DISPLAY "*     BIENVENIDO AL CAJERO      *".
+           DISPLAY "*                               *".
+           DISPLAY "*********************************".
+           DISPLAY "---------------------------------".
+           DISPLAY SPACES.
            DISPLAY "    -Gracias por elegirnos-".
+           DISPLAY SPACES.
             
        VALIDAR-PIN.
            MOVE 'N' TO WS-VALIDO 
            PERFORM UNTIL WS-VALIDO = 'S'
-               DISPLAY "# Ingrese su CBF de 6 digitos #"
+               DISPLAY "================================="
+               DISPLAY "#  Ingrese su CBF de 6 digitos  #"
+               DISPLAY "================================="
                ACCEPT WS-CBF
         
            IF WS-CBF IS NUMERIC
@@ -122,18 +131,26 @@
            IF P-CBF OF CLIENTE NOT = '000000' AND
               P-CBF OF CLIENTE NOT = SPACES
                MOVE 'S' TO WS-VALIDO
+               CALL "SYSTEM" USING "CLS"
                DISPLAY "Cliente encontrado: "  P-NOMBRE " " P-APELLIDO
                
-                CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                CALL 'obtener-saldo' USING P-CBF OF CLIENTE 
                                            WS-SALDO-CALCULADO
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO-CALCULADO-FORM
+                DISPLAY SPACES 
+                DISPLAY "*************************************"
                 DISPLAY "Saldo actual: $" WS-SALDO-CALCULADO-FORM
+                DISPLAY SPACES
+                DISPLAY "*************************************"
+                DISPLAY "Presione ENTER para MENU OPERACIONES"
                      
                ACCEPT OMITTED
              
            ELSE
+               DISPLAY "*************************************"
                DISPLAY "CBF NO VALIDO - Cliente no encontrado"
+               DISPLAY "*************************************"
            END-IF
            ELSE
            DISPLAY "CBF debe contener solo números"
@@ -144,17 +161,35 @@
 
        MENU-OPERACIONES.
            CALL "SYSTEM" USING "CLS".
-           DISPLAY "================================".
-           DISPLAY "// Por favor, elija una opcion \\".
-           DISPLAY "1.Saldo".
-           DISPLAY "2.Transferencia".
-           DISPLAY "3.Deposito".
-           DISPLAY "4.Extraccion".
-           DISPLAY "5.Ultimos Movimientos".
-           DISPLAY "6.Ver transacciones".
-           DISPLAY "7.Salir"
+           
+           DISPLAY " "
+           DISPLAY "****************************************".
+           DISPLAY "**          MENU PRINCIPAL           **".
+           DISPLAY "****************************************".
+           DISPLAY "|*||||||||||||||||***|||||||||||||||||*|".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 1. Saldo                             |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 2. Transferencia                     |" .
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 3. Deposito                          |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 4. Extraccion                        |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 5. Ultimos Movimientos               |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 6. Ver transacciones                 |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "| 7. Salir                             |".
+           DISPLAY "|--------------------------------------|".
+           DISPLAY "|                                      |".
+           DISPLAY "|  .Por favor, elija una opcion:       |".
+           DISPLAY "|______________________________________|".
            DISPLAY "Su opcion: " WITH NO ADVANCING.
+
+          
            ACCEPT MENU-CHOICE.
+           CALL "SYSTEM" USING "CLS".
            
            EVALUATE TRUE 
                 WHEN CONSULTA-SALDO PERFORM MENU-SALDO
@@ -184,13 +219,19 @@
            MOVE WS-SALDO TO WS-SALDO-FORMAT
            DISPLAY "Su saldo actual es de: " "$" WS-SALDO-FORMAT
            PERFORM UNTIL WS-OPCION-SALDO = 1 OR WS-OPCION-SALDO = 2
+           DISPLAY "****************************************"
            DISPLAY "1.Enviar por e-mail"
-           DISPLAY "2.Volver a pantalla de operaciones"
+           DISPLAY "----------------------------------------"
+           DISPLAY "2.Volver a MENU OPERACIONES"
+           DISPLAY "----------------------------------------"
            ACCEPT WS-OPCION-SALDO
 
            EVALUATE WS-OPCION-SALDO
                WHEN 1 
+                   DISPLAY "------------------------------------"
                    DISPLAY "Enviando por e-mail..."
+                   DISPLAY "------------------------------------"
+                   DISPLAY "Presione ENTER para MENU OPERACIONES"
                    ACCEPT OMITTED 
                    MOVE 2 TO WS-OPCION-SALDO
                WHEN 2 
@@ -208,22 +249,30 @@
        MENU-TRANSFERENCIA.
            
            MOVE CLIENTE TO WS-CLIENTE-ACTUAL 
-           DISPLAY "Ingrese el CBF destino:"
+           DISPLAY "*******************************"
+           DISPLAY "    Ingrese el CBF destino:    "
+           DISPLAY SPACES
            ACCEPT WS-CBF-DESTINO
 
            MOVE WS-CBF-DESTINO TO P-CBF OF CLIENTE
            CALL 'buscar-cliente' USING CLIENTE
    
            IF P-CBF OF CLIENTE = '000000' OR P-CBF OF CLIENTE = SPACES
-               DISPLAY "CBF destino no válido. Operación cancelada."
+               DISPLAY "-------------------------------------------"
+               DISPLAY "CBF destino no valido. Operacion cancelada."
+               DISPLAY "-------------------------------------------"
+               DISPLAY "Presione ENTER para MENU OPERACIONES"
                ACCEPT OMITTED
                MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
                PERFORM MENU-OPERACIONES
            ELSE
-           
+           DISPLAY "***************************************"
            DISPLAY "Nombre del destinatario: " P-NOMBRE " " P-APELLIDO
-           DISPLAY "Ingrese monto a transferir:"
+           DISPLAY "***************************************"
+           DISPLAY "Ingrese monto a transferir: $ " WITH NO ADVANCING
+           *>DISPLAY SPACES
            ACCEPT WS-MONTO-TRANSF
+           DISPLAY SPACES
 
            MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
            
@@ -258,9 +307,13 @@
                 MOVE 'Transferencia' TO WS-MOV-TIPO(WS-INDICE-MOV)
                 MOVE WS-MONTO-TRANSF TO WS-MOV-MONTO(WS-INDICE-MOV) 
                    
+           DISPLAY "---------------------------------------"
            DISPLAY "Transferencia exitosa de $ -" WS-MONTO-TRANSF-FOR 
+           DISPLAY "---------------------------------------"
            DISPLAY "Su nuevo saldo es de: $" WS-SALDO-FORMAT
-
+           DISPLAY "---------------------------------------"
+           DISPLAY SPACES
+           DISPLAY "Presiones ENTER para MENU OPERACIONES"
                
                  ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD    
                  ACCEPT WS-HORA-COMPLETA      FROM TIME
@@ -278,17 +331,26 @@
 
        MENU-DEPOSITO.
            MOVE 0 TO WS-OPCION-DEP
-           DISPLAY "Ingrese monto a depositar:"
+           DISPLAY "*****************************"
+           DISPLAY "Ingrese monto a depositar: $ "
+           DISPLAY "*****************************"
+           DISPLAY SPACES
            ACCEPT WS-MONTO
            PERFORM UNTIL WS-OPCION-DEP = 1 OR WS-OPCION-DEP = 2 
+           DISPLAY "-------------------------------------------"
            DISPLAY "1. Confirmar Deposito"
-           DISPLAY "2. Volver a pantalla de operaciones"
+           DISPLAY "-------------------------------------------"
+           DISPLAY "2. Volver a MENU OPERACIONES"
+           DISPLAY "-------------------------------------------"
            ACCEPT WS-OPCION-DEP
 
            EVALUATE WS-OPCION-DEP
               WHEN 1
                  MOVE WS-MONTO TO WS-MONTO-FORMAT
+                 DISPLAY "-------------------------------------------"
                  DISPLAY "Deposito confirmado por $" WS-MONTO-FORMAT
+                 DISPLAY "-------------------------------------------"
+                 DISPLAY "Presione ENTER para MENU OPERACIONES"
                  COMPUTE WS-SALDO = WS-MONTO + WS-SALDO
                  MOVE WS-SALDO TO WS-SALDO-FORMAT
 
@@ -321,7 +383,9 @@
               WHEN 2
                   CONTINUE              
               WHEN OTHER
+                 DISPLAY "---------------"
                  DISPLAY "Opcion invalida"
+                 DISPLAY "---------------"
                  ACCEPT OMITTED
            
            END-EVALUATE
@@ -340,27 +404,39 @@
                   AND WS-MONTO-EXT <= TOPE-EXT
            
            MOVE WS-SALDO TO WS-SALDO-FORMAT
+           DISPLAY "***************************************"
            DISPLAY "Su saldo actual es de: $" WS-SALDO-FORMAT
-           DISPLAY "Ingrese monto a extraer:"
+           DISPLAY "***************************************"
+           DISPLAY "Ingrese monto a extraer: $"
+           DISPLAY SPACES
            ACCEPT WS-MONTO-EXT
 
            IF WS-MONTO-EXT > WS-SALDO
+                   DISPLAY "-----------------------------------------"
                    DISPLAY "Fondos insuficientes. Ingrese otro monto."
+                   DISPLAY "-----------------------------------------"
+                   DISPLAY "Presiones ENTER"
                    MOVE 0 TO WS-MONTO-EXT
                    ACCEPT OMITTED
               ELSE
                  IF WS-MONTO-EXT > TOPE-EXT
+                    DISPLAY "---------------------------------------"
                     DISPLAY "Supera el tope permitido ($" TOPE-EXT ")."
+                    DISPLAY "---------------------------------------"
                     DISPLAY "Ingrese un monto menor, apriete ENTER."
+                    DISPLAY SPACES
                     MOVE 0 TO WS-MONTO-EXT
                     ACCEPT OMITTED
                  END-IF
               END-IF
            END-PERFORM
 
-           PERFORM UNTIL WS-OPCION-EXT = 1 OR WS-OPCION-EXT = 2  
+           PERFORM UNTIL WS-OPCION-EXT = 1 OR WS-OPCION-EXT = 2 
+              DISPLAY "----------------------------------------"
               DISPLAY "1. Confirmar Extraccion"
+              DISPLAY "----------------------------------------"
               DISPLAY "2. Volver a pantalla de operaciones"
+              DISPLAY "----------------------------------------"
               ACCEPT WS-OPCION-EXT
 
            EVALUATE WS-OPCION-EXT
@@ -368,7 +444,9 @@
                     COMPUTE WS-SALDO = WS-SALDO - WS-MONTO-EXT
                     MOVE WS-SALDO TO WS-SALDO-FORMAT
                     MOVE WS-MONTO-EXT TO WS-MONTO-EXT-FOR
+                    DISPLAY "***************************************"
                     DISPLAY "Extraccion exitosa de $ -" WS-MONTO-EXT-FOR
+                    DISPLAY "***************************************"
 
                     MOVE "E" TO WS-DESCRIPCION-TRANS 
                     MOVE WS-MONTO-EXT TO WS-MONTO-TRANS
@@ -378,7 +456,7 @@
                                               WS-SALDO-CALCULADO 
                     MOVE WS-SALDO-CALCULADO TO WS-SALDO 
 
-                    DISPLAY WS-INDICE-MOV
+                    *>DISPLAY WS-INDICE-MOV
                     IF WS-INDICE-MOV >= 5 
                     MOVE 0 TO WS-INDICE-MOV
                     END-IF
@@ -386,6 +464,8 @@
                     MOVE 'Extraccion' TO WS-MOV-TIPO(WS-INDICE-MOV)
                     MOVE WS-MONTO-EXT TO WS-MOV-MONTO(WS-INDICE-MOV)
                     DISPLAY "Saldo restante: $" WS-SALDO-FORMAT
+                    DISPLAY SPACES
+                    DISPLAY "Presione ENTER para MENU OPERACIONES"
                     ACCEPT WS-FECHA-HORA FROM DATE YYYYMMDD  
                     ACCEPT WS-HORA-COMPLETA      FROM TIME
                     MOVE WS-ANIO    TO WS-MOV-ANIO(WS-INDICE-MOV)
@@ -400,7 +480,9 @@
                  WHEN 2
                     CONTINUE 
                  WHEN OTHER
+                    DISPLAY "----------------"
                     DISPLAY "Opcion invalida."
+                    DISPLAY "----------------"
                     ACCEPT OMITTED
               END-EVALUATE
            END-PERFORM
@@ -410,7 +492,7 @@
 
        MENU-ULT-MOVIMIENTOS.
            DISPLAY " "
-           DISPLAY "====== Historial de Movimientos ======"
+           DISPLAY "********************************************"
            DISPLAY " "
            
            CALL 'listar-ult-mov' 
@@ -430,6 +512,7 @@
                       DISPLAY "Enviando historial por email..."
                       DISPLAY "Email enviado correctamente."
                       DISPLAY " "
+                      DISPLAY "Presiones ENTER para MENU OPERACIONES"
                       ACCEPT OMITTED
                       MOVE 2 TO WS-OPCION-MOV
                   WHEN 2
