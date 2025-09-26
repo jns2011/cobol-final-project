@@ -43,7 +43,7 @@
            MOVE LK-CBF TO WS-CBF-BUSCAR
     
            DISPLAY " "
-           DISPLAY "--- Historial de Movimientos ---"
+           DISPLAY "********* Historial de Movimientos *********"
            DISPLAY " "   
 
            OPEN INPUT TRANS-FILE
@@ -51,10 +51,11 @@
                DISPLAY "Error al abrir archivo de transacciones"
                GOBACK
            END-IF
-
+           DISPLAY "--------------------------------------------" 
            DISPLAY "Buscando transacciones para CBF: " WS-CBF-BUSCAR
+           DISPLAY SPACES
            DISPLAY "Mostrando ultimas "WS-CANTIDAD-MAX " transacciones:"
-           DISPLAY "----------------------------------------"  
+           DISPLAY "--------------------------------------------"  
     
            MOVE LOW-VALUES TO R-CBF
           

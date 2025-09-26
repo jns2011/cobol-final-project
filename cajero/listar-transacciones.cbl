@@ -82,7 +82,7 @@
 
            CLOSE TRANS-FILE
            DISPLAY " "
-           DISPLAY "Presione ENTER para volver al menu principal..."
+           DISPLAY "Presione ENTER para MENU OPERACIONES"
            ACCEPT WS-OPCION-VOLVER
            GOBACK.
        
