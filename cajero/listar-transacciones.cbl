@@ -82,7 +82,11 @@
 
            CLOSE TRANS-FILE
            DISPLAY " "
+<<<<<<< HEAD
+           DISPLAY "Presione ENTER para MENU OPERACIONES"
+=======
            DISPLAY "Presione ENTER para volver al menu principal..."
+>>>>>>> upstream/main
            ACCEPT WS-OPCION-VOLVER
            GOBACK.
        

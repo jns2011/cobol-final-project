@@ -3,7 +3,7 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CSV-FILE ASSIGN TO "cuentas.csv"
+           SELECT CSV-FILE ASSIGN TO "altas\includes\cuentas.csv"
                ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.

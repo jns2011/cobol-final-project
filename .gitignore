@@ -8,3 +8,5 @@
 *.exe
 *.dat
 */*.dat
+*/*.exe
+*/*.dat

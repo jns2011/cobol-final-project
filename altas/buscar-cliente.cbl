@@ -1,14 +1,12 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. BUSCAR-CLIENTE.
+       PROGRAM-ID. buscar-cliente.
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CUENTAS-FILE ASSIGN TO "cuentas.dat"
+           SELECT CUENTAS-FILE ASSIGN TO "altas\includes\cuentas.dat"
                ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
-               RECORD KEY IS CLI-CBF
-               FILE STATUS IS FILE-STATUS.
-
+               RECORD KEY IS CLI-CBF.
        DATA DIVISION.
        FILE SECTION.
        FD  CUENTAS-FILE.
@@ -18,23 +16,24 @@
        COPY "file-status.cpy".
        
        LINKAGE SECTION.
-       COPY "cliente.cpy". 
+       COPY "cliente.cpy".
 
        PROCEDURE DIVISION USING CLIENTE.
        
        COPY "open-file-client.cpy".
       
-           MOVE P-CBF TO CLI-CBF.
-           READ CUENTAS-FILE
+        MOVE P-CBF OF CLIENTE TO CLI-CBF.
+        READ CUENTAS-FILE
                KEY IS CLI-CBF
                INVALID KEY
-                   MOVE "000000" TO P-CBF
+                   MOVE "000000" TO P-CBF OF CLIENTE
                NOT INVALID KEY 
                    MOVE REGISTRO-CLIENTE TO CLIENTE                   
            END-READ.              
        
        COPY "close-file-client.cpy".
        
-           GOBACK.
-       END PROGRAM BUSCAR-CLIENTE.
+       GOBACK.
+       
+       END PROGRAM buscar-cliente.
        

@@ -1,3 +1,4 @@
+
        IDENTIFICATION DIVISION.
        PROGRAM-ID. ALTAS-CLIENTES.
        AUTHOR. Rodas, Matteoda, Lopez,Condotta.
@@ -64,6 +65,7 @@
             WHEN OTHER
                   DISPLAY "OPCION INVALIDA"
            END-EVALUATE.
+           
            CLOSE CSV-FILE.
 
        PROCESAR-CSV SECTION.
