@@ -11,11 +11,16 @@
        DATA DIVISION.
        FILE SECTION.
        FD CSV-FILE.
-       01 CSV-REGISTRO.
+       01  CSV-REGISTRO.
            05 CBF  PIC 9(6).
            05 APELLIDO PIC X(30).
            05 NOMBRE PIC X(30).
            05 EMAIL  PIC X(50).
+
+       01 CSV-REGISTRO-FILLER REDEFINES CSV-REGISTRO.
+           05 ID-CUENTA-REG   PIC X(6).
+           05 FILLER           PIC X(110).
+
 
        WORKING-STORAGE SECTION.
        01 EOF-FLAG      PIC 9 VALUE 0.
@@ -53,9 +58,9 @@
              READ CSV-FILE
                AT END MOVE 1 TO EOF-FLAG
                NOT AT END
-                
-                MOVE CSV-REGISTRO(1:6) TO ID-CUENTA-STR
-                INSPECT ID-CUENTA-STR REPLACING ALL ',' BY ' '
+
+             MOVE ID-CUENTA-REG TO ID-CUENTA-STR
+             INSPECT ID-CUENTA-STR REPLACING ALL ',' BY ' '
                   CALL "CREAR-CBF" USING ID-CUENTA-STR, ID-CUENTA
                   PERFORM PROCESAR-CSV
                END-PERFORM
@@ -65,7 +70,7 @@
                   DISPLAY "OPCION INVALIDA"
            END-EVALUATE.
            CLOSE CSV-FILE.
-
+           STOP RUN.
        PROCESAR-CSV SECTION.
            
             CALL "CALCULATE-CBF" USING ID-CUENTA, CLAVE-BANCARIA
@@ -83,7 +88,4 @@
             END-IF.
                
        END PROGRAM ALTAS-CLIENTES.
-       
-       
-
        
