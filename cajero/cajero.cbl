@@ -8,7 +8,7 @@
 
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CUENTAS-FILE ASSIGN TO "altas\includes\cuentas.dat" 
+           SELECT CUENTAS-FILE ASSIGN TO "..\altas\cuentas.dat" 
               ORGANIZATION IS INDEXED
                ACCESS MODE IS DYNAMIC
               RECORD KEY IS CLI-CBF.
@@ -92,6 +92,14 @@
            05  WS-NOMBRE-ACT   PIC X(30).
            05  WS-EMAIL-ACT    PIC X(50).
 
+       01 WS-CLIENTE-DESTINO.
+           05 P-CBF-DEST          PIC X(6).
+           05 P-NOMBRE-DEST       PIC X(20).
+           05 P-APELLIDO-DEST     PIC X(20).
+           05 P-SALDO-DEST        PIC S9(10)V99.
+           05 P-EMAIL-DEST        PIC X(30).
+           05 P-TELEFONO-DEST     PIC X(15).
+
     
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -126,26 +134,18 @@
             AND FUNCTION LENGTH(WS-CBF) = 6
            
            MOVE WS-CBF TO P-CBF OF CLIENTE
-           CALL 'buscar-cliente' USING CLIENTE
+           CALL 'BUSCAR-CLIENTE' USING CLIENTE
            
            IF P-CBF OF CLIENTE NOT = '000000' AND
               P-CBF OF CLIENTE NOT = SPACES
                MOVE 'S' TO WS-VALIDO
                CALL "SYSTEM" USING "CLS"
-               DISPLAY "Cliente encontrado: "  P-NOMBRE " " P-APELLIDO
-               
-                CALL 'obtener-saldo' USING P-CBF OF CLIENTE 
-                                           WS-SALDO-CALCULADO
+               DISPLAY   P-NOMBRE " " P-APELLIDO     
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO
                 MOVE WS-SALDO-CALCULADO TO WS-SALDO-CALCULADO-FORM
                 DISPLAY SPACES 
-                DISPLAY "*************************************"
-                DISPLAY "Saldo actual: $" WS-SALDO-CALCULADO-FORM
-                DISPLAY SPACES
-                DISPLAY "*************************************"
-                DISPLAY "Presione ENTER para MENU OPERACIONES"
-                     
-               ACCEPT OMITTED
+                
+               PERFORM MENU-OPERACIONES
              
            ELSE
                DISPLAY "*************************************"
@@ -153,43 +153,44 @@
                DISPLAY "*************************************"
            END-IF
            ELSE
-           DISPLAY "CBF debe contener solo números"
+           DISPLAY "CBF debe contener solo numeros"
            END-IF
-           END-PERFORM
-           MOVE 'N' TO WS-MENU-FIN
-           PERFORM MENU-OPERACIONES UNTIL WS-MENU-FIN = 'S'.
+           END-PERFORM.
+    
 
        MENU-OPERACIONES.
-           CALL "SYSTEM" USING "CLS".
+           MOVE 'N' TO WS-MENU-FIN   
+           PERFORM UNTIL WS-MENU-FIN = 'S' 
+           CALL "SYSTEM" USING "CLS" 
            
            DISPLAY " "
-           DISPLAY "****************************************".
-           DISPLAY "**          MENU PRINCIPAL           **".
-           DISPLAY "****************************************".
-           DISPLAY "|*||||||||||||||||***|||||||||||||||||*|".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 1. Saldo                             |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 2. Transferencia                     |" .
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 3. Deposito                          |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 4. Extraccion                        |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 5. Ultimos Movimientos               |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 6. Ver transacciones                 |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "| 7. Salir                             |".
-           DISPLAY "|--------------------------------------|".
-           DISPLAY "|                                      |".
-           DISPLAY "|  .Por favor, elija una opcion:       |".
-           DISPLAY "|______________________________________|".
-           DISPLAY "Su opcion: " WITH NO ADVANCING.
+           DISPLAY "****************************************"
+           DISPLAY "**          MENU PRINCIPAL           **"
+           DISPLAY "****************************************"
+           DISPLAY "|*||||||||||||||||***|||||||||||||||||*|"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 1. Saldo                             |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 2. Transferencia                     |" 
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 3. Deposito                          |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 4. Extraccion                        |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 5. Ultimos Movimientos               |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 6. Ver transacciones                 |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "| 7. Salir                             |"
+           DISPLAY "|--------------------------------------|"
+           DISPLAY "|                                      |"
+           DISPLAY "|  .Por favor, elija una opcion:       |"
+           DISPLAY "|______________________________________|" 
+           DISPLAY "Su opcion: " WITH NO ADVANCING 
 
           
-           ACCEPT MENU-CHOICE.
-           CALL "SYSTEM" USING "CLS".
+           ACCEPT MENU-CHOICE 
+           CALL "SYSTEM" USING "CLS" 
            
            EVALUATE TRUE 
                 WHEN CONSULTA-SALDO PERFORM MENU-SALDO
@@ -197,18 +198,20 @@
                 WHEN REALIZAR-DEPOSITO PERFORM MENU-DEPOSITO
                 WHEN REALIZAR-EXTRACCION PERFORM MENU-EXTRACCION
                 WHEN ULT-MOVIMIENTOS PERFORM MENU-ULT-MOVIMIENTOS
-                WHEN EXIT-PROGRAM MOVE 'S' TO WS-MENU-FIN 
+                WHEN EXIT-PROGRAM MOVE 'S' TO WS-MENU-FIN    
                 WHEN LISTAR-TRANS CALL 'listar-transacciones'
                     USING P-CBF OF CLIENTE  
                 WHEN OTHER DISPLAY "Opcion invalida"
-           END-EVALUATE.
+           END-EVALUATE 
+           END-PERFORM.
+        
            
        REGISTRAR-TRANSACCION.
            MOVE P-CBF OF CLIENTE TO P-CBF OF TRANSACCION 
            MOVE WS-DESCRIPCION-TRANS TO P-DESCRIPCION
            MOVE WS-MONTO-TRANS TO P-IMPORTE
     
-           CALL "crear-transaccion" USING TRANSACCION, RESULTADO
+           CALL 'crear-transaccion' USING TRANSACCION, RESULTADO
 
            IF RESULTADO NOT = 0
                DISPLAY "Error al registrar transaccion en archivo"
@@ -216,7 +219,12 @@
 
        MENU-SALDO.
            MOVE 0 TO WS-OPCION-SALDO
+           CALL 'obtener-saldo' 
+                USING P-CBF OF CLIENTE
+                      WS-SALDO-CALCULADO
+           MOVE WS-SALDO-CALCULADO TO WS-SALDO
            MOVE WS-SALDO TO WS-SALDO-FORMAT
+           
            DISPLAY "Su saldo actual es de: " "$" WS-SALDO-FORMAT
            PERFORM UNTIL WS-OPCION-SALDO = 1 OR WS-OPCION-SALDO = 2
            DISPLAY "****************************************"
@@ -245,61 +253,62 @@
            IF WS-OPCION-SALDO = 2
                PERFORM MENU-OPERACIONES
            END-IF.
-
-       MENU-TRANSFERENCIA.
            
+       MENU-TRANSFERENCIA. 
            MOVE CLIENTE TO WS-CLIENTE-ACTUAL 
            DISPLAY "*******************************"
            DISPLAY "    Ingrese el CBF destino:    "
            DISPLAY SPACES
            ACCEPT WS-CBF-DESTINO
 
-           MOVE WS-CBF-DESTINO TO P-CBF OF CLIENTE
-           CALL 'buscar-cliente' USING CLIENTE
-   
-           IF P-CBF OF CLIENTE = '000000' OR P-CBF OF CLIENTE = SPACES
-               DISPLAY "-------------------------------------------"
-               DISPLAY "CBF destino no valido. Operacion cancelada."
-               DISPLAY "-------------------------------------------"
-               DISPLAY "Presione ENTER para MENU OPERACIONES"
-               ACCEPT OMITTED
-               MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
-               PERFORM MENU-OPERACIONES
+           MOVE WS-CBF-DESTINO TO P-CBF-DEST OF WS-CLIENTE-DESTINO
+           MOVE WS-CLIENTE-DESTINO TO CLIENTE 
+           CALL 'BUSCAR-CLIENTE' USING CLIENTE
+           MOVE CLIENTE TO WS-CLIENTE-DESTINO  
+
+           IF P-CBF-DEST OF WS-CLIENTE-DESTINO = '000000' 
+               OR P-CBF-DEST OF WS-CLIENTE-DESTINO = SPACES
+           DISPLAY "-------------------------------------------"
+           DISPLAY "CBF destino no valido. Operacion cancelada."
+           DISPLAY "-------------------------------------------"
+           DISPLAY "Presione ENTER para MENU OPERACIONES"
+           ACCEPT OMITTED
+           MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
+           PERFORM MENU-OPERACIONES
            ELSE
-           DISPLAY "***************************************"
-           DISPLAY "Nombre del destinatario: " P-NOMBRE " " P-APELLIDO
-           DISPLAY "***************************************"
-           DISPLAY "Ingrese monto a transferir: $ " WITH NO ADVANCING
-           *>DISPLAY SPACES
-           ACCEPT WS-MONTO-TRANSF
-           DISPLAY SPACES
+               DISPLAY "*************"
+               DISPLAY "Nombre del destinatario: " 
+               P-NOMBRE-DEST " " P-APELLIDO-DEST
+               DISPLAY "*************"
+            DISPLAY "Ingrese monto a transferir: $ " WITH NO ADVANCING
+               ACCEPT WS-MONTO-TRANSF
+               DISPLAY SPACES
 
            MOVE WS-CLIENTE-ACTUAL TO CLIENTE 
-           
+       
            IF WS-MONTO-TRANSF > WS-SALDO 
                DISPLAY "Fondos insuficientes. Operacion cancelada."
-               ACCEPT OMITTED
-                       
-               PERFORM MENU-OPERACIONES
+           ACCEPT OMITTED
+           PERFORM MENU-OPERACIONES
            ELSE
-              
-               MOVE "T" TO WS-DESCRIPCION-TRANS 
-               MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
-               PERFORM REGISTRAR-TRANSACCION
+         
+           MOVE "T" TO WS-DESCRIPCION-TRANS 
+           MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
+           PERFORM REGISTRAR-TRANSACCION
 
-               MOVE WS-CBF-DESTINO TO P-CBF OF CLIENTE
-               
-               MOVE "D" TO WS-DESCRIPCION-TRANS 
-               MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
-               PERFORM REGISTRAR-TRANSACCION   
-              
-               MOVE WS-CLIENTE-ACTUAL TO CLIENTE
-                   CALL 'obtener-sald' USING P-CBF OF CLIENTE
-                                            WS-SALDO-CALCULADO
-                   MOVE WS-SALDO-CALCULADO TO WS-SALDO
-                   MOVE WS-SALDO TO WS-SALDO-FORMAT
-                   MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANSF-FOR 
-  
+           MOVE WS-CLIENTE-DESTINO TO CLIENTE
+           MOVE "D" TO WS-DESCRIPCION-TRANS 
+           MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANS
+           PERFORM REGISTRAR-TRANSACCION   
+          
+           MOVE WS-CLIENTE-ACTUAL TO CLIENTE
+           CALL 'obtener-saldo' 
+               USING P-CBF OF CLIENTE
+                     WS-SALDO-CALCULADO
+           MOVE WS-SALDO-CALCULADO TO WS-SALDO
+           MOVE WS-SALDO TO WS-SALDO-FORMAT
+           MOVE WS-MONTO-TRANSF TO WS-MONTO-TRANSF-FOR 
+
            IF WS-INDICE-MOV >= 5 
                 MOVE 0 TO WS-INDICE-MOV
            END-IF
@@ -358,7 +367,8 @@
                  MOVE WS-MONTO TO WS-MONTO-TRANS
                  PERFORM REGISTRAR-TRANSACCION
 
-                 CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                 CALL 'obtener-saldo' 
+                 USING P-CBF OF CLIENTE 
                                           WS-SALDO-CALCULADO 
                  MOVE WS-SALDO-CALCULADO TO WS-SALDO 
 
@@ -452,11 +462,11 @@
                     MOVE WS-MONTO-EXT TO WS-MONTO-TRANS
                     PERFORM REGISTRAR-TRANSACCION
 
-                    CALL 'obtener-sald' USING P-CBF OF CLIENTE 
+                    CALL 'obtener-saldo'
+                     USING P-CBF OF CLIENTE 
                                               WS-SALDO-CALCULADO 
                     MOVE WS-SALDO-CALCULADO TO WS-SALDO 
 
-                    *>DISPLAY WS-INDICE-MOV
                     IF WS-INDICE-MOV >= 5 
                     MOVE 0 TO WS-INDICE-MOV
                     END-IF
